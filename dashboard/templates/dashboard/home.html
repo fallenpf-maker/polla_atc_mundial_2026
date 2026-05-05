@@ -1,0 +1,18 @@
+<h1>{{ titulo }}</h1>
+
+<h2>Bienvenido {{ usuario }}</h2>
+
+<h3>Puntos acumulados:
+{{ puntos }}
+</h3>
+
+<h3>Predicciones realizadas:
+{{ cantidad_predicciones }}
+</h3>
+
+<form action="/accounts/logout/" method="post">
+{% csrf_token %}
+<button type="submit">
+Cerrar sesión
+</button>
+</form>

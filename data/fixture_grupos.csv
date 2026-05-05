@@ -1,0 +1,63 @@
+local;visitante;fecha;jornada;grupo;fase
+Mexico;Sudafrica;11/6/26 17:00;1;A;GRUPOS
+Corea del Sur;Chequia;11/6/26 23:00;1;A;GRUPOS
+Canada;Bosnia y Herzegovina;12/6/26 15:00;1;B;GRUPOS
+Estados Unidos;Paraguay;13/6/26 00:00;1;D;GRUPOS
+Catar;Suiza;13/6/26 15:00;1;B;GRUPOS
+Brasil;Marruecos;13/6/26 18:00;1;C;GRUPOS
+Haiti;Escocia;13/6/26 21:00;1;C;GRUPOS
+Australia;Turquia;14/6/26 01:00;1;D;GRUPOS
+Alemania;Curazao;14/6/26 15:00;1;E;GRUPOS
+Paises Bajos;Japon;14/6/26 18:00;1;F;GRUPOS
+Costa de Marfil;Ecuador;14/6/26 21:00;1;E;GRUPOS
+Suecia;Tunez;15/6/26 01:00;1;F;GRUPOS
+España;Cabo Verde;15/6/26 15:00;1;H;GRUPOS
+Belgica;Egipto;15/6/26 18:00;1;G;GRUPOS
+Arabia Saudita;Uruguay;15/6/26 21:00;1;H;GRUPOS
+Iran;Nueva Zelanda;16/6/26 00:00;1;G;GRUPOS
+Francia;Senegal;16/6/26 15:00;1;I;GRUPOS
+Irak;Noruega;16/6/26 18:00;1;I;GRUPOS
+Argentina;Argelia;16/6/26 21:00;1;J;GRUPOS
+Austria;Jordania;17/6/26 01:00;1;J;GRUPOS
+Portugal;Republica Democratica del Congo;17/6/26 15:00;1;K;GRUPOS
+Inglaterra;Croacia;17/6/26 18:00;1;L;GRUPOS
+Ghana;Panama;17/6/26 21:00;1;L;GRUPOS
+Uzbekistan;Colombia;18/6/26 01:00;1;K;GRUPOS
+Chequia;Mexico;18/6/26 15:00;2;A;GRUPOS
+Suiza;Bosnia y Herzegovina;18/6/26 18:00;2;B;GRUPOS
+Canada;Catar;18/6/26 21:00;2;B;GRUPOS
+Sudafrica;Corea del Sur;19/6/26 00:00;2;A;GRUPOS
+Estados Unidos;Australia;19/6/26 15:00;2;D;GRUPOS
+Escocia;Marruecos;19/6/26 18:00;2;C;GRUPOS
+Brasil;Haiti;19/6/26 21:30;2;C;GRUPOS
+Turquia;Paraguay;20/6/26 01:00;2;D;GRUPOS
+Paises Bajos;Suecia;20/6/26 15:00;2;F;GRUPOS
+Alemania;Costa de Marfil;20/6/26 18:00;2;E;GRUPOS
+Ecuador;Curazao;20/6/26 22:00;2;E;GRUPOS
+Tunez;Japon;21/6/26 02:00;2;F;GRUPOS
+España;Arabia Saudita;21/6/26 14:00;2;H;GRUPOS
+Belgica;Iran;21/6/26 17:00;2;G;GRUPOS
+Uruguay;Cabo Verde;21/6/26 20:00;2;H;GRUPOS
+Nueva Zelanda;Egipto;21/6/26 23:00;2;G;GRUPOS
+Argentina;Austria;22/6/26 15:00;2;J;GRUPOS
+Francia;Irak;22/6/26 18:00;2;I;GRUPOS
+Noruega;Senegal;22/6/26 21:00;2;I;GRUPOS
+Jordania;Argelia;23/6/26 01:00;2;J;GRUPOS
+Portugal;Uzbekistan;23/6/26 15:00;2;K;GRUPOS
+Inglaterra;Ghana;23/6/26 18:00;2;L;GRUPOS
+Panama;Croacia;23/6/26 21:00;2;L;GRUPOS
+Colombia;Republica Democratica del Congo;24/6/26 00:00;2;K;GRUPOS
+Chequia;Mexico;24/6/26 23:00;3;A;GRUPOS
+Sudafrica;Corea del Sur;24/6/26 23:00;3;A;GRUPOS
+Suiza;Canada;24/6/26 18:00;3;B;GRUPOS
+Bosnia y Herzegovina;Catar;24/6/26 18:00;3;B;GRUPOS
+Brasil;Escocia;24/6/26 21:00;3;C;GRUPOS
+Marruecos;Haiti;24/6/26 21:00;3;C;GRUPOS
+Turquia;Estados Unidos;26/6/26 01:00;3;D;GRUPOS
+Paraguay;Australia;26/6/26 01:00;3;D;GRUPOS
+Ecuador;Alemania;25/6/26 15:00;3;E;GRUPOS
+Curazao;Costa de Marfil;25/6/26 15:00;3;E;GRUPOS
+Tunez;Paises Bajos;25/6/26 20:00;3;F;GRUPOS
+Japon;Suecia;25/6/26 20:00;3;F;GRUPOS
+Nueva Zelanda;Belgica;26/6/26 15:00;3;G;GRUPOS
+Egipto;Iran;26/6/26 15:00;3;G;GRUPOS

@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: Arial;
+    color: white;
+    padding: 20px;
+
+    background:
+        linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)),
+        url("{% static 'images/fifa_bg.png' %}");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.card {
+    background: rgba(30, 41, 59, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.01);
+    transition: 0.3s;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+/* filtros */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.filtros label {
+    background: rgba(51, 65, 85, 0.8);
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* botones */
+button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #4CAF50;
+    color: white;
+}
+
+/* ranking barras */
+.bar-container {
+    background: rgba(51, 65, 85, 0.6);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar {
+    height: 8px;
+    background: linear-gradient(90deg, #ff4d4d, #ffd700, #4CAF50);
+    width: 0%;
+    transition: width 1s;
+}
+
+/* tabla */
+table {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* gráfico */
+canvas {
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* animación */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<div class="container">
+
+
+    <!-- POSICIÓN -->
+    <div class="card" style="text-align:center; background: rgba(76,175,80,0.8);">
+        <h2>📊 Tu posición actual</h2>
+        <h1>
+            {% if mi_posicion %}
+                Estás en el puesto {{ mi_posicion }}
+            {% else %}
+                Sin posición aún
+            {% endif %}
+        </h1>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="card">
+        <h2>👤 Mi resumen</h2>
+        <p><strong>Puntos:</strong> {{ mis_puntos }}</p>
+        <p><strong>Predicciones:</strong> {{ cantidad_predicciones }}</p>
+        <p>
+            👉 <a href="/predicciones/" style="color:#FFD700;">
+                Ir a predicciones
+            </a>
+        </p>
+    </div>
+
+    <!-- GRÁFICO -->
+    <div class="card">
+        <h2>📈 Evolución de participantes</h2>
+
+        <div class="filtros">
+            <button onclick="mostrarTop()">Top 5 + Yo</button>
+            <button onclick="mostrarTodos()">Mostrar todos</button>
+        </div>
+
+        <div id="filtrosUsuarios" class="filtros"></div>
+
+        <canvas id="grafico"></canvas>
+    </div>
+
+    <!-- RANKING -->
+    <div class="card">
+        <h2>🏆 Ranking</h2>
+
+        {% for user in ranking %}
+        <div style="margin-bottom:10px;">
+            <strong>
+                {% if forloop.counter == 1 %}🥇
+                {% elif forloop.counter == 2 %}🥈
+                {% elif forloop.counter == 3 %}🥉
+                {% endif %}
+
+                {{ user.username }}
+                {% if user == request.user %} ⭐{% endif %}
+            </strong>
+
+            ({{ user.puntos_totales|default:0 }} pts)
+
+            <div class="bar-container">
+                <div class="bar"
+                     data-width="{{ user.puntos_totales|default:0|porcentaje:max_puntos }}">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+// =======================
+// DATOS DJANGO
+// =======================
+const jornadas = {{ jornadas|safe }};
+const usuarios = {{ evolucion_usuarios|safe }};
+const usuarioActual = "{{ request.user.username }}";
+
+// =======================
+// COLORES
+// =======================
+function colorRandom(i) {
+    const colores = [
+        '#ff4d4d','#4CAF50','#2196F3','#FFD700',
+        '#9C27B0','#FF9800','#00BCD4','#E91E63'
+    ];
+    return colores[i % colores.length];
+}
+
+// =======================
+// CHECKBOXES
+// =======================
+const contenedor = document.getElementById('filtrosUsuarios');
+
+usuarios.forEach(u => {
+    const label = document.createElement('label');
+
+    label.innerHTML = `
+        <input type="checkbox" value="${u.usuario}" checked>
+        ${u.usuario}
+    `;
+
+    contenedor.appendChild(label);
+});
+
+// =======================
+// DATASETS
+// =======================
+function crearDatasets(lista) {
+    return usuarios
+        .filter(u => lista.includes(u.usuario))
+        .map((u, i) => ({
+            label: u.usuario,
+            data: u.puntos,
+            borderColor: u.usuario === usuarioActual ? '#ffffff' : colorRandom(i),
+            borderWidth: u.usuario === usuarioActual ? 4 : 2,
+            tension: 0.3
+        }));
+}
+
+// =======================
+// CHART
+// =======================
+let chart;
+
+function renderChart(listaUsuarios) {
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(document.getElementById('grafico'), {
+        type: 'line',
+        data: {
+            labels: jornadas.map(j => "J" + j),
+            datasets: crearDatasets(listaUsuarios)
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: { color: 'white' }
+                }
+            },
+            scales: {
+                x: { ticks: { color: 'white' }},
+                y: { ticks: { color: 'white' }}
+            }
+        }
+    });
+}
+
+// =======================
+// UTILIDADES
+// =======================
+function getSeleccionados() {
+    return Array.from(
+        document.querySelectorAll('#filtrosUsuarios input:checked')
+    ).map(i => i.value);
+}
+
+contenedor.addEventListener('change', () => {
+    renderChart(getSeleccionados());
+});
+
+function mostrarTop() {
+    const top = usuarios.slice(0, 5).map(u => u.usuario);
+
+    if (!top.includes(usuarioActual)) {
+        top.push(usuarioActual);
+    }
+
+    marcarChecks(top);
+    renderChart(top);
+}
+
+function mostrarTodos() {
+    const todos = usuarios.map(u => u.usuario);
+    marcarChecks(todos);
+    renderChart(todos);
+}
+
+function marcarChecks(lista) {
+    document.querySelectorAll('#filtrosUsuarios input').forEach(i => {
+        i.checked = lista.includes(i.value);
+    });
+}
+
+// =======================
+// INIT
+// =======================
+mostrarTop();
+
+// animación barras
+document.querySelectorAll('.bar').forEach(bar => {
+    let width = bar.getAttribute('data-width');
+    setTimeout(() => {
+        bar.style.width = width + "%";
+    }, 300);
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+local,visitante,fecha,jornada,grupo,fase
+Mexico,Sudafrica,2026-06-11 17:00,1,A,GRUPOS
+Corea del Sur,Chequia,2026-06-11 23:00,1,A,GRUPOS
+Canada,Bosnia y Herzegovina,2026-06-12 15:00,1,B,GRUPOS
+Estados Unidos,Paraguay,2026-06-13 00:00,1,D,GRUPOS
+Catar,Suiza,2026-06-13 15:00,1,B,GRUPOS
+Brasil,Marruecos,2026-06-13 18:00,1,C,GRUPOS
+Haiti,Escocia,2026-06-13 21:00,1,C,GRUPOS
+Australia,Turquia,2026-06-14 01:00,1,D,GRUPOS
+Alemania,Curazao,2026-06-14 15:00,1,E,GRUPOS
+Paises Bajos,Japon,2026-06-14 18:00,1,F,GRUPOS
+Costa de Marfil,Ecuador,2026-06-14 21:00,1,E,GRUPOS
+Suecia,Tunez,2026-06-15 01:00,1,F,GRUPOS
+España,Cabo Verde,2026-06-15 15:00,1,H,GRUPOS
+Belgica,Egipto,2026-06-15 18:00,1,G,GRUPOS
+Arabia Saudita,Uruguay,2026-06-15 21:00,1,H,GRUPOS
+Iran,Nueva Zelanda,2026-06-16 00:00,1,G,GRUPOS
+Francia,Senegal,2026-06-16 15:00,1,I,GRUPOS
+Irak,Noruega,2026-06-16 18:00,1,I,GRUPOS
+Argentina,Argelia,2026-06-16 21:00,1,J,GRUPOS
+Austria,Jordania,2026-06-17 01:00,1,J,GRUPOS
+Portugal,Republica Democratica del Congo,2026-06-17 15:00,1,K,GRUPOS
+Inglaterra,Croacia,2026-06-17 18:00,1,L,GRUPOS
+Ghana,Panama,2026-06-17 21:00,1,L,GRUPOS
+Uzbekistan,Colombia,2026-06-18 01:00,1,K,GRUPOS
+Chequia,Mexico,2026-06-18 15:00,2,A,GRUPOS
+Suiza,Bosnia y Herzegovina,2026-06-18 18:00,2,B,GRUPOS
+Canada,Catar,2026-06-18 21:00,2,B,GRUPOS
+Sudafrica,Corea del Sur,2026-06-19 00:00,2,A,GRUPOS
+Estados Unidos,Australia,2026-06-19 15:00,2,D,GRUPOS
+Escocia,Marruecos,2026-06-19 18:00,2,C,GRUPOS
+Brasil,Haiti,2026-06-19 21:30,2,C,GRUPOS
+Turquia,Paraguay,2026-06-20 01:00,2,D,GRUPOS
+Paises Bajos,Suecia,2026-06-20 15:00,2,F,GRUPOS
+Alemania,Costa de Marfil,2026-06-20 18:00,2,E,GRUPOS
+Ecuador,Curazao,2026-06-20 22:00,2,E,GRUPOS
+Tunez,Japon,2026-06-21 02:00,2,F,GRUPOS
+España,Arabia Saudita,2026-06-21 14:00,2,H,GRUPOS
+Belgica,Iran,2026-06-21 17:00,2,G,GRUPOS
+Uruguay,Cabo Verde,2026-06-21 20:00,2,H,GRUPOS
+Nueva Zelanda,Egipto,2026-06-21 23:00,2,G,GRUPOS
+Argentina,Austria,2026-06-22 15:00,2,J,GRUPOS
+Francia,Irak,2026-06-22 18:00,2,I,GRUPOS
+Noruega,Senegal,2026-06-22 21:00,2,I,GRUPOS
+Jordania,Argelia,2026-06-23 01:00,2,J,GRUPOS
+Portugal,Uzbekistan,2026-06-23 15:00,2,K,GRUPOS
+Inglaterra,Ghana,2026-06-23 18:00,2,L,GRUPOS
+Panama,Croacia,2026-06-23 21:00,2,L,GRUPOS
+Colombia,Republica Democratica del Congo,2026-06-24 00:00,2,K,GRUPOS
+Chequia,Mexico,2026-06-24 23:00,3,A,GRUPOS
+Sudafrica,Corea del Sur,2026-06-24 23:00,3,A,GRUPOS
+Suiza,Canada,2026-06-24 18:00,3,B,GRUPOS
+Bosnia y Herzegovina,Catar,2026-06-24 18:00,3,B,GRUPOS
+Brasil,Escocia,2026-06-24 21:00,3,C,GRUPOS
+Marruecos,Haiti,2026-06-24 21:00,3,C,GRUPOS
+Turquia,Estados Unidos,2026-06-26 01:00,3,D,GRUPOS
+Paraguay,Australia,2026-06-26 01:00,3,D,GRUPOS
+Ecuador,Alemania,2026-06-25 15:00,3,E,GRUPOS
+Curazao,Costa de Marfil,2026-06-25 15:00,3,E,GRUPOS
+Tunez,Paises Bajos,2026-06-25 20:00,3,F,GRUPOS
+Japon,Suecia,2026-06-25 20:00,3,F,GRUPOS
+Nueva Zelanda,Belgica,2026-06-26 15:00,3,G,GRUPOS
+Egipto,Iran,2026-06-26 15:00,3,G,GRUPOS

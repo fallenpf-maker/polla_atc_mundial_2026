@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    font-family: Arial;
+    color: white;
+    margin: 0;
+}
+
+/* LAYOUT */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 60px;
+}
+
+/* LADO IZQUIERDO */
+.left {
+    text-align: center;
+    max-width: 400px;
+    animation: fadeIn 1s ease;
+}
+
+.left h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* IMAGEN */
+.left img {
+    width: 260px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.7);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* HOVER PRO */
+.left img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 35px rgba(255,215,0,0.6);
+}
+
+/* CARD */
+.card {
+    background: rgba(30, 41, 59, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 15px;
+    width: 380px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+    text-align: center;
+    animation: slideUp 0.8s ease;
+}
+
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: none;
+    background: #334155;
+    color: white;
+}
+
+/* BOTÓN */
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #4CAF50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #45a049;
+    transform: scale(1.03);
+}
+
+/* ERRORES */
+.errorlist {
+    background: #ff4d4d;
+    padding: 8px;
+    border-radius: 6px;
+    list-style: none;
+    margin-bottom: 10px;
+}
+
+/* LABELS */
+label {
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+small {
+    display: block;
+    text-align: left;
+    color: #94a3b8;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+/* PASSWORD */
+.password-container {
+    position: relative;
+}
+
+.toggle {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #ccc;
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-20px);}
+    to { opacity: 1; transform: translateX(0);}
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+</style>
+
+<div class="container">
+
+    <!-- 🎯 IZQUIERDA -->
+    <div class="left">
+
+        <img src="{% static 'images/FIFA_A.jpg' %}">
+    </div>
+
+    <!-- 🧾 FORMULARIO -->
+    <div class="card">
+
+        <h2>📝 Crear Cuenta</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- USUARIO -->
+            <label>👤 Usuario</label>
+            {{ form.username }}
+            <small>Nombre único para ingresar</small>
+
+            <!-- TELÉFONO -->
+            <label>📱 Teléfono</label>
+            {{ form.telefono }}
+            <small>Usaremos este número para contacto y grupo de WhatsApp</small>
+
+            <!-- PASSWORD -->
+            <label>🔒 Contraseña</label>
+            <div class="password-container">
+                {{ form.password1 }}
+                <span class="toggle" onclick="togglePassword('id_password1')">👁</span>
+            </div>
+
+            <!-- CONFIRM -->
+            <label>🔒 Confirmar contraseña</label>
+            <div class="password-container">
+                {{ form.password2 }}
+                <span class="toggle" onclick="togglePassword('id_password2')">👁</span>
+            </div>
+
+            {% if form.errors %}
+                <div class="errorlist">
+                    {{ form.errors }}
+                </div>
+            {% endif %}
+
+            <button type="submit">Registrarse</button>
+        </form>
+
+        <br>
+
+        <p>
+            ¿Ya tienes cuenta?
+            <a href="/accounts/login/" style="color:#4CAF50;">
+                Inicia sesión
+            </a>
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+function togglePassword(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+}
+</script>
+
+{% endblock %}

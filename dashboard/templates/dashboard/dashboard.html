@@ -1,0 +1,154 @@
+{% load custom_filters %}
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.dashboard {
+    max-width: 900px;
+    margin: auto;
+}
+
+/* 👤 RESUMEN */
+.resumen {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 🏆 TARJETAS */
+.ranking {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* 🥇 TOP 3 */
+.gold { background: linear-gradient(90deg, #FFD700, #B8860B); color: black; }
+.silver { background: linear-gradient(90deg, #C0C0C0, #808080); color: black; }
+.bronze { background: linear-gradient(90deg, #cd7f32, #8B4513); }
+
+/* ⭐ usuario */
+.me {
+    border: 2px solid #4CAF50;
+}
+
+/* 📊 BARRA */
+.bar-container {
+    width: 100%;
+    background: #334155;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.bar {
+    height: 8px;
+    background: linear-gradient(90deg, #ff4d4d, #ffd700, #4CAF50);
+    width: 0%;
+    transition: width 1s ease-in-out;
+}
+
+/* layout interno */
+.info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+}
+</style>
+
+<div class="dashboard">
+
+<h1>🏆 Mundial 2026</h1>
+
+<div class="resumen">
+    <h2>👤 Mi rendimiento</h2>
+    <p><strong>Puntos:</strong> {{ mis_puntos }}</p>
+    <p><strong>Predicciones:</strong> {{ cantidad_predicciones }}</p>
+</div>
+
+<h2>🏆 Ranking</h2>
+
+<div class="ranking">
+
+{% for user in ranking %}
+
+<div class="card 
+    {% if forloop.counter == 1 %}gold
+    {% elif forloop.counter == 2 %}silver
+    {% elif forloop.counter == 3 %}bronze
+    {% endif %}
+    {% if user == request.user %}me{% endif %}
+">
+
+```
+<div>
+    {% if forloop.counter == 1 %}🥇
+    {% elif forloop.counter == 2 %}🥈
+    {% elif forloop.counter == 3 %}🥉
+    {% else %}#{{ forloop.counter }}
+    {% endif %}
+</div>
+
+<div class="info">
+    <div class="top">
+        <span>
+            {{ user.username }}
+            {% if user == request.user %} ⭐{% endif %}
+        </span>
+        <span>{{ user.puntos_totales|default:0 }} pts</span>
+    </div>
+
+    <div class="bar-container">
+        <div class="bar" 
+             data-width="{{ user.puntos_totales|default:0|porcentaje:max_puntos }}">
+        </div>
+    </div>
+</div>
+```
+
+</div>
+
+{% endfor %}
+
+</div>
+</div>
+
+<script>
+// 🎮 Animación tipo FIFA
+document.querySelectorAll('.bar').forEach(bar => {
+    let width = bar.getAttribute('data-width');
+    setTimeout(() => {
+        bar.style.width = width + "%";
+    }, 300);
+});
+</script>
