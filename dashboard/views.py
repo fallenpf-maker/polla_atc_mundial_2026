@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 from predictions.models import Prediction
 from matches.models import Match
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
+@login_required
 
 def dashboard(request):
 
