@@ -136,6 +136,50 @@ canvas {
         </p>
     </div>
 
+    <div class="card">
+        <h2>📊 Rendimiento</h2>
+    
+        <!-- KPI principal -->
+        <div style="text-align:center; margin-bottom:20px;">
+            <h1 style="font-size:40px; color:#4CAF50;">
+                {{ stats.tasa_acierto }}%
+            </h1>
+            <p>Tasa de acierto</p>
+        </div>
+    
+        <!-- Barra distribución -->
+        <div style="display:flex; height:20px; border-radius:10px; overflow:hidden; margin-bottom:10px;">
+            <div style="width: {{ stats.porc_exactos }}%; background:#4CAF50;"></div>
+            <div style="width: {{ stats.porc_parciales }}%; background:#FFC107;"></div>
+            <div style="width: {{ stats.porc_fallados }}%; background:#f44336;"></div>
+        </div>
+    
+        <!-- Leyenda -->
+        <div style="display:flex; justify-content:space-between; font-size:14px;">
+            <span>✅ {{ stats.porc_exactos }}% Exactos</span>
+            <span>🟡 {{ stats.porc_parciales }}% Parciales</span>
+            <span>❌ {{ stats.porc_fallados }}% Fallados</span>
+        </div>
+    
+        <hr style="margin:15px 0;">
+    
+        <!-- Conteo -->
+        <div style="display:flex; justify-content:space-around; text-align:center;">
+            <div>
+                <h3>{{ stats.exactos }}</h3>
+                <small>Exactos</small>
+            </div>
+            <div>
+                <h3>{{ stats.parciales }}</h3>
+                <small>Parciales</small>
+            </div>
+            <div>
+                <h3>{{ stats.fallados }}</h3>
+                <small>Fallados</small>
+            </div>
+        </div>
+    </div>
+
     <!-- GRÁFICO -->
     <div class="card">
         <h2>📈 Evolución de participantes</h2>

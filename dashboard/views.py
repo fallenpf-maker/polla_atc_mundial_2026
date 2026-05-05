@@ -5,6 +5,7 @@ from predictions.models import Prediction
 from matches.models import Match
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Sum, Case, When, IntegerField
 
 @login_required
 
@@ -78,6 +79,22 @@ def dashboard(request):
             'usuario': user.username,
             'puntos': puntos_acumulados
         })
+    # 📊 TOTAL PREDICCIONES
+    preds = Prediction.objects.filter(usuario=request.user)
+
+    total = preds.count()
+
+    exactos = preds.filter(puntos_obtenidos=3).count()
+    parciales = preds.filter(puntos_obtenidos=1).count()
+    fallados = preds.filter(puntos_obtenidos=0).count()
+
+    # 🧮 TASA DE ACIERTO
+    tasa_acierto = (exactos / total * 100) if total > 0 else 0
+
+    # 📊 DISTRIBUCIÓN %
+    porc_exactos = (exactos / total * 100) if total > 0 else 0
+    porc_parciales = (parciales / total * 100) if total > 0 else 0
+    porc_fallados = (fallados / total * 100) if total > 0 else 0 
 
     # 📦 contexto final
     contexto = {
@@ -87,7 +104,15 @@ def dashboard(request):
         'max_puntos': max_puntos,
         'jornadas': list(jornadas),
         'evolucion_usuarios': evolucion_usuarios,
-        'mi_posicion': mi_posicion
-    }
+        'mi_posicion': mi_posicion,
+        'tasa_acierto': round(tasa_acierto, 1),
+        'exactos': exactos,
+        'parciales': parciales,
+        'fallados': fallados,
+        'porc_exactos': round(porc_exactos, 1),
+        'porc_parciales': round(porc_parciales, 1),
+        'porc_fallados': round(porc_fallados, 1),
+        'total': total
+        }
 
     return render(request, 'dashboard/index.html', contexto)
