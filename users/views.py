@@ -4,7 +4,7 @@ from .forms import RegistroForm
 from .models import Perfil
 
 
-def registro(request):
+def register(request):
 
     if request.method == 'POST':
         form = RegistroForm(request.POST)
