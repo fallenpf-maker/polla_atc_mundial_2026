@@ -82,9 +82,8 @@ def dashboard(request):
     # 📊 TOTAL PREDICCIONES
         # 📊 SOLO predicciones evaluadas
     preds = Prediction.objects.filter(
-        usuario=request.user,
-        puntos_obtenidos__isnull=False
-)
+    usuario=request.user
+    )
 
 # 🚀 MÉTRICAS OPTIMIZADAS (1 sola consulta)
     stats = preds.aggregate(
@@ -100,7 +99,7 @@ def dashboard(request):
 
     # 🧮 CÁLCULOS
     tasa_acierto = (exactos / total * 100) if total > 0 else 0
-    
+
     porc_exactos = (exactos / total * 100) if total > 0 else 0
     porc_parciales = (parciales / total * 100) if total > 0 else 0
     porc_fallados = (fallados / total * 100) if total > 0 else 0
