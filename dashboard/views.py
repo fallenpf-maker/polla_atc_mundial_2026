@@ -80,21 +80,30 @@ def dashboard(request):
             'puntos': puntos_acumulados
         })
     # 📊 TOTAL PREDICCIONES
-    preds = Prediction.objects.filter(usuario=request.user)
+        # 📊 SOLO predicciones evaluadas
+    preds = Prediction.objects.filter(
+        usuario=request.user,
+        puntos_obtenidos__isnull=False
+)
 
-    total = preds.count()
+# 🚀 MÉTRICAS OPTIMIZADAS (1 sola consulta)
+    stats = preds.aggregate(
+        total=Count('id'),
+        exactos=Count(Case(When(puntos_obtenidos=3, then=1), output_field=IntegerField())),
+        parciales=Count(Case(When(puntos_obtenidos=1, then=1), output_field=IntegerField())),
+    )
 
-    exactos = preds.filter(puntos_obtenidos=3).count()
-    parciales = preds.filter(puntos_obtenidos=1).count()
-    fallados = preds.filter(puntos_obtenidos=0).count()
+    total = stats['total'] or 0
+    exactos = stats['exactos'] or 0
+    parciales = stats['parciales'] or 0
+    fallados = total - exactos - parciales
 
-    # 🧮 TASA DE ACIERTO
+    # 🧮 CÁLCULOS
     tasa_acierto = (exactos / total * 100) if total > 0 else 0
-
-    # 📊 DISTRIBUCIÓN %
+    
     porc_exactos = (exactos / total * 100) if total > 0 else 0
     porc_parciales = (parciales / total * 100) if total > 0 else 0
-    porc_fallados = (fallados / total * 100) if total > 0 else 0 
+    porc_fallados = (fallados / total * 100) if total > 0 else 0
 
     # 📦 contexto final
     contexto = {
