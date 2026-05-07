@@ -137,47 +137,109 @@ canvas {
     </div>
 
     <div class="card">
+
         <h2>📊 Rendimiento</h2>
     
-        <!-- KPI principal -->
-        <div style="text-align:center; margin-bottom:20px;">
-            <h1 style="font-size:40px; color:#4CAF50;">
-                {{ stats.tasa_acierto }}%
-            </h1>
-            <p>Tasa de acierto</p>
-        </div>
+        <div style="text-align:center; margin-bottom:30px;">
     
-        <!-- Barra distribución -->
-        <div style="display:flex; height:20px; border-radius:10px; overflow:hidden; margin-bottom:10px;">
-            <div style="width: {{ stats.porc_exactos }}%; background:#4CAF50;"></div>
-            <div style="width: {{ stats.porc_parciales }}%; background:#FFC107;"></div>
-            <div style="width: {{ stats.porc_fallados }}%; background:#f44336;"></div>
-        </div>
-    
-        <!-- Leyenda -->
-        <div style="display:flex; justify-content:space-between; font-size:14px;">
-            <span>✅ {{ stats.porc_exactos }}% Exactos</span>
-            <span>🟡 {{ stats.porc_parciales }}% Parciales</span>
-            <span>❌ {{ stats.porc_fallados }}% Fallados</span>
-        </div>
-    
-        <hr style="margin:15px 0;">
-    
-        <!-- Conteo -->
-        <div style="display:flex; justify-content:space-around; text-align:center;">
-            <div>
-                <h3>{{ stats.exactos }}</h3>
-                <small>Exactos</small>
+            <div style="
+                font-size:60px;
+                font-weight:bold;
+                color:#4ade80;
+            ">
+                {{ tasa_acierto }}%
             </div>
-            <div>
-                <h3>{{ stats.parciales }}</h3>
-                <small>Parciales</small>
+    
+            <div style="font-size:18px; opacity:0.9;">
+                Tasa de acierto
             </div>
-            <div>
-                <h3>{{ stats.fallados }}</h3>
-                <small>Fallados</small>
-            </div>
+    
         </div>
+    
+        <div style="
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap:20px;
+            text-align:center;
+        ">
+    
+            <!-- EXACTOS -->
+            <div style="
+                background:rgba(34,197,94,0.15);
+                padding:20px;
+                border-radius:12px;
+            ">
+                <div style="font-size:40px;">✅</div>
+    
+                <div style="
+                    font-size:32px;
+                    font-weight:bold;
+                    color:#4ade80;
+                ">
+                    {{ porc_exactos }}%
+                </div>
+    
+                <div>
+                    Exactos
+                </div>
+    
+                <div style="opacity:0.7;">
+                    {{ exactos }} partidos
+                </div>
+            </div>
+    
+            <!-- PARCIALES -->
+            <div style="
+                background:rgba(251,191,36,0.15);
+                padding:20px;
+                border-radius:12px;
+            ">
+                <div style="font-size:40px;">🟨</div>
+    
+                <div style="
+                    font-size:32px;
+                    font-weight:bold;
+                    color:#facc15;
+                ">
+                    {{ porc_parciales }}%
+                </div>
+    
+                <div>
+                    Parciales
+                </div>
+    
+                <div style="opacity:0.7;">
+                    {{ parciales }} partidos
+                </div>
+            </div>
+    
+            <!-- FALLADOS -->
+            <div style="
+                background:rgba(239,68,68,0.15);
+                padding:20px;
+                border-radius:12px;
+            ">
+                <div style="font-size:40px;">❌</div>
+    
+                <div style="
+                    font-size:32px;
+                    font-weight:bold;
+                    color:#f87171;
+                ">
+                    {{ porc_fallados }}%
+                </div>
+    
+                <div>
+                    Fallados
+                </div>
+    
+                <div style="opacity:0.7;">
+                    {{ fallados }} partidos
+                </div>
+            </div>
+    
+        </div>
+    
     </div>
 
     <!-- GRÁFICO -->
