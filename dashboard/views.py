@@ -6,6 +6,7 @@ from matches.models import Match
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum, Case, When, IntegerField
+from django.db.models.functions import TruncDate
 
 @login_required
 
@@ -50,9 +51,10 @@ def dashboard(request):
             goles_local__isnull=False,
             goles_visitante__isnull=False
         )
-        .order_by('fecha_partido')
-        .values_list('fecha_partido', flat=True)
+        .annotate(fecha=TruncDate('fecha_partido'))
+        .values_list('fecha', flat=True)
         .distinct()
+        .order_by('fecha')
     )
 
     # 👥 usar ranking para mantener orden consistente
@@ -76,7 +78,7 @@ def dashboard(request):
                 for p in predicciones
                 if (
                     p.usuario_id == user.id and
-                    p.partido.fecha_partido == fecha
+                    p.partido.fecha_partido.date() == fecha
                 )
             )
 

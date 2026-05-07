@@ -127,7 +127,32 @@ canvas {
     <!-- RESUMEN -->
     <div class="card">
         <h2>👤 Mi resumen</h2>
-        <p><strong>Puntos:</strong> {{ mis_puntos }}</p>
+        <div style="
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 20px rgba(34,197,94,0.35);
+        ">
+
+            <div style="
+                font-size:18px;
+                opacity:0.9;
+                margin-bottom:8px;
+            ">
+                🏆 Puntos acumulados
+        </div>
+
+        <div style="
+            font-size:54px;
+            font-weight:bold;
+            line-height:1;
+        ">
+            {{ mis_puntos }}
+        </div>
+
+    </div>
         <p><strong>Predicciones:</strong> {{ cantidad_predicciones }}</p>
         <p>
             👉 <a href="/predicciones/" style="color:#FFD700;">
