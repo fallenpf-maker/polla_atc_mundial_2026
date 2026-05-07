@@ -146,13 +146,13 @@ input {
                     <td>
                         <input type="number"
                                name="local_{{ partido.id }}"
-                               value="{{ pred.pred_local|default:'' }}">
+                               value="{{ pred.pred_local|default_if_none:'' }}"
                     </td>
 
                     <td>
                         <input type="number"
                                name="visitante_{{ partido.id }}"
-                               value="{{ pred.pred_visitante|default:'' }}">
+                               value="{{ pred.pred_visitante|default_if_none:'' }}"
                     </td>
                 </tr>
                 {% endwith %}
