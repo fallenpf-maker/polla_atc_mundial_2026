@@ -19,7 +19,7 @@ def register(request):
             )
 
             login(request, user)
-            return redirect('/predicciones/')  # 👈 flujo directo
+            return redirect('dashboard')  # 👈 flujo directo
 
     else:
         form = RegistroForm()

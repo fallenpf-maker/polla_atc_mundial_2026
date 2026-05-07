@@ -25,7 +25,7 @@ def mis_predicciones(request):
             local = request.POST.get(f'local_{partido.id}')
             visitante = request.POST.get(f'visitante_{partido.id}')
 
-            if local and visitante:
+            if local != '' and visitante != '':
 
                 Prediction.objects.update_or_create(
                     usuario=request.user,
