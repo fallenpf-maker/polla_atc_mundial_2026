@@ -43,12 +43,12 @@ def dashboard(request):
             mi_posicion = i
             break
 
-    # 📅 Jornadas
-    jornadas = list(
+    # 📅 Fechas únicas de partidos
+    fechas = list(
         Match.objects
-        .values_list('jornada', flat=True)
+        .order_by('fecha_partido')
+        .values_list('fecha_partido', flat=True)
         .distinct()
-        .order_by('jornada')
     )
 
     # 👥 usar ranking para mantener orden consistente
@@ -65,11 +65,15 @@ def dashboard(request):
         acumulado = 0
         puntos_acumulados = []
 
-        for j in jornadas:
+        for fecha in fechas:
+
             puntos = sum(
                 (p.puntos_obtenidos or 0)
                 for p in predicciones
-                if p.usuario_id == user.id and p.partido.jornada == j
+                if (
+                    p.usuario_id == user.id and
+                    p.partido.fecha_partido == fecha
+                )
             )
 
             acumulado += puntos
@@ -110,7 +114,10 @@ def dashboard(request):
         'mis_puntos': mis_puntos,
         'cantidad_predicciones': cantidad_predicciones,
         'max_puntos': max_puntos,
-        'jornadas': list(jornadas),
+        'fechas': [
+            f.strftime('%d/%b')
+            for f in fechas
+        ],
         'evolucion_usuarios': evolucion_usuarios,
         'mi_posicion': mi_posicion,
         'tasa_acierto': round(tasa_acierto, 1),

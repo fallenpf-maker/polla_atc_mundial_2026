@@ -227,7 +227,7 @@ canvas {
 // =======================
 // DATOS DJANGO
 // =======================
-const jornadas = {{ jornadas|safe }};
+const fechas = {{ fechas|safe }};
 const usuarios = {{ evolucion_usuarios|safe }};
 const usuarioActual = "{{ request.user.username }}";
 
@@ -285,7 +285,7 @@ function renderChart(listaUsuarios) {
     chart = new Chart(document.getElementById('grafico'), {
         type: 'line',
         data: {
-            labels: jornadas.map(j => "J" + j),
+            labels: fechas,
             datasets: crearDatasets(listaUsuarios)
         },
         options: {
@@ -297,7 +297,15 @@ function renderChart(listaUsuarios) {
             },
             scales: {
                 x: { ticks: { color: 'white' }},
-                y: { ticks: { color: 'white' }}
+                y: {
+                    beginAtZero: true,
+                    min: 0,
+
+                    ticks: {
+                        color: 'white',
+                        precision: 0
+                    }
+                }
             }
         }
     });
