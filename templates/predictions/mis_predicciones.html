@@ -4,196 +4,502 @@
 
 {% block content %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-body {
-    font-family: Arial;
-    color: white;
-    padding: 20px;
+
+body{
 
     background:
-        linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)),
+        linear-gradient(rgba(15,23,42,0.86), rgba(15,23,42,0.95)),
         url("{% static 'images/fifa_bg.png' %}");
 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+
+    font-family:Arial;
+    color:white;
 }
 
-.container {
-    max-width: 1100px;
-    margin: auto;
+.container{
+
+    max-width:1200px;
+    margin:auto;
+    padding:25px;
 }
 
-.card {
-    background: rgba(30, 41, 59, 0.75);
+.hero{
+
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.hero h1{
+
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.hero p{
+
+    color:#cbd5e1;
+    font-size:18px;
+}
+
+.fecha-card{
+
+    margin-top:40px;
+    margin-bottom:20px;
+
+    background: rgba(255,255,255,0.08);
+
+    padding:14px 20px;
+
+    border-radius:14px;
+
+    font-size:22px;
+    font-weight:bold;
+
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-
-    animation: fadeIn 0.6s ease-in-out;
 }
 
-.card:hover {
-    transform: scale(1.01);
-    transition: 0.3s;
+.partidos-grid{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+    gap:20px;
 }
 
-h1, h2 {
-    text-align: center;
+.match-card{
+
+    background: rgba(30,41,59,0.72);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border-radius:22px;
+
+    padding:25px;
+
+    box-shadow:0 8px 30px rgba(0,0,0,0.35);
+
+    transition:0.3s;
 }
 
-button {
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background: #4CAF50;
-    color: white;
-    font-weight: bold;
+.match-card:hover{
+
+    transform:translateY(-4px);
 }
 
-.btn-secundario {
-    background: #2196F3;
+.match-time{
+
+    text-align:center;
+    color:#cbd5e1;
+
+    margin-bottom:20px;
 }
 
-/* tabla */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(6px);
-    border-radius: 10px;
-    overflow: hidden;
+.teams{
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:15px;
 }
 
-th, td {
-    padding: 10px;
-    text-align: center;
+.team{
+
+    width:40%;
+    text-align:center;
 }
 
-th {
-    background: rgba(0,0,0,0.6);
+.team-name{
+
+    margin-top:10px;
+    font-weight:bold;
+    font-size:17px;
 }
 
-input {
-    width: 60px;
-    padding: 5px;
-    border-radius: 6px;
-    border: none;
-    text-align: center;
-    background: #334155;
-    color: white;
+.vs{
+
+    font-size:24px;
+    font-weight:bold;
 }
 
-/* contador */
-#contador {
-    text-align: center;
-    font-size: 18px;
-    margin-bottom: 15px;
+.inputs{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:20px;
 }
 
-/* animación */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.score-input{
+
+    width:70px;
+    height:60px;
+
+    border:none;
+    border-radius:16px;
+
+    text-align:center;
+
+    font-size:26px;
+    font-weight:bold;
+
+    background: rgba(255,255,255,0.10);
+
+    color:white;
+
+    backdrop-filter: blur(10px);
+
+    outline:none;
+
+    transition:0.3s;
 }
+
+.score-input:focus{
+
+    background: rgba(255,255,255,0.18);
+
+    transform:scale(1.05);
+}
+
+.status{
+
+    margin-top:20px;
+
+    text-align:center;
+
+    padding:10px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+}
+
+.status-pending{
+
+    background: rgba(59,130,246,0.18);
+    color:#93c5fd;
+}
+
+.status-exact{
+
+    background: rgba(34,197,94,0.18);
+    color:#86efac;
+}
+
+.status-partial{
+
+    background: rgba(250,204,21,0.18);
+    color:#fde68a;
+}
+
+.status-failed{
+
+    background: rgba(239,68,68,0.18);
+    color:#fca5a5;
+}
+
+.save-container{
+
+    text-align:center;
+    margin-top:40px;
+}
+
+.save-btn{
+
+    padding:18px 35px;
+
+    border:none;
+    border-radius:16px;
+
+    font-size:18px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    color:white;
+
+    background: linear-gradient(135deg,#22c55e,#16a34a);
+
+    box-shadow:0 8px 25px rgba(34,197,94,0.35);
+
+    transition:0.3s;
+}
+
+.save-btn:hover{
+
+    transform:scale(1.04);
+}
+
+.locked{
+
+    opacity:0.6;
+    pointer-events:none;
+}
+
+.contador{
+
+    text-align:center;
+
+    margin-top:20px;
+    margin-bottom:40px;
+
+    font-size:22px;
+    font-weight:bold;
+
+    color:#facc15;
+}
+
+.closed{
+
+    color:#ef4444;
+}
+
+@media(max-width:768px){
+
+    .teams{
+        flex-direction:column;
+    }
+
+    .team{
+        width:100%;
+    }
+
+    .vs{
+        margin:10px 0;
+    }
+}
+
 </style>
 
 <div class="container">
 
-    <h1>⚽ Mis Predicciones - Fase de Grupos</h1>
+    <!-- HERO -->
 
-    <!-- BOTÓN IR AL DASHBOARD -->
-    <div class="card" style="text-align:center;">
-        <a href="/" style="text-decoration:none;">
-            <button class="btn-secundario">🏆 Ir al Dashboard</button>
-        </a>
+    <div class="hero">
+
+        <h1>⚽ Mis Predicciones</h1>
+
+        <p>
+            Completa tus pronósticos antes del cierre oficial
+        </p>
+
     </div>
 
     <!-- CONTADOR -->
-    <div class="card">
-        <h2 id="contador"></h2>
-    </div>
+
+    <div id="contador" class="contador"></div>
 
     <!-- FORM -->
-    <div class="card">
 
-        <form method="post">
-            {% csrf_token %}
+    <form method="post">
 
-            <table>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Partido</th>
-                    <th>Local</th>
-                    <th>Visitante</th>
-                </tr>
+        {% csrf_token %}
 
-                {% for partido in partidos %}
-                {% with pred=pred_dict|get_item:partido.id %}
-                <tr>
-                    <td>{{ partido.fecha_partido }}</td>
+        {% for grupo in partidos_agrupados %}
 
-                    <td>
-                        {{ partido.equipo_local }} vs {{ partido.equipo_visitante }}
-                    </td>
+            <!-- FECHA -->
 
-                    <td>
-                        <input type="number"
-                               min="0"
-                               max="20"
-                               name="local_{{ partido.id }}"
-                               value="{{ pred.pred_local|default_if_none:'' }}">
-                    </td>
-                    
-                    <td>
-                        <input type="number"
-                               min="0"
-                               max="20"
-                               name="visitante_{{ partido.id }}"
-                               value="{{ pred.pred_visitante|default_if_none:'' }}">
-                    </td>
-                </tr>
-                {% endwith %}
+            <div class="fecha-card">
+
+                📅 {{ grupo.fecha|date:"d M Y" }}
+
+            </div>
+
+            <!-- PARTIDOS -->
+
+            <div class="partidos-grid">
+
+                {% for partido in grupo.partidos %}
+
+                    {% with pred=pred_dict|get_item:partido.id %}
+
+                    <div class="match-card {% if now >= fecha_cierre %}locked{% endif %}">
+
+                        <div class="match-time">
+
+                            {{ partido.fecha_partido|date:"H:i" }}
+
+                        </div>
+
+                        <div class="teams">
+
+                            <div class="team">
+
+                                <div style="font-size:55px;">🏳️</div>
+
+                                <div class="team-name">
+
+                                    {{ partido.equipo_local }}
+
+                                </div>
+
+                            </div>
+
+                            <div class="vs">
+                                VS
+                            </div>
+
+                            <div class="team">
+
+                                <div style="font-size:55px;">🏳️</div>
+
+                                <div class="team-name">
+
+                                    {{ partido.equipo_visitante }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- INPUTS -->
+
+                        <div class="inputs">
+
+                            <input
+                                type="number"
+                                min="0"
+
+                                class="score-input"
+
+                                name="local_{{ partido.id }}"
+
+                                value="{% if pred %}{{ pred.pred_local }}{% endif %}"
+
+                                {% if now >= fecha_cierre %}disabled{% endif %}
+                            >
+
+                            <span style="font-size:24px;">-</span>
+
+                            <input
+                                type="number"
+                                min="0"
+
+                                class="score-input"
+
+                                name="visitante_{{ partido.id }}"
+
+                                value="{% if pred %}{{ pred.pred_visitante }}{% endif %}"
+
+                                {% if now >= fecha_cierre %}disabled{% endif %}
+                            >
+
+                        </div>
+
+                        <!-- STATUS -->
+
+                        {% if pred %}
+
+                            {% if pred.puntos_obtenidos == 3 %}
+
+                                <div class="status status-exact">
+                                    ✅ Exacto (+3)
+                                </div>
+
+                            {% elif pred.puntos_obtenidos == 1 %}
+
+                                <div class="status status-partial">
+                                    🟡 Parcial (+1)
+                                </div>
+
+                            {% elif pred.puntos_obtenidos == 0 %}
+
+                                <div class="status status-failed">
+                                    ❌ Fallado
+                                </div>
+
+                            {% else %}
+
+                                <div class="status status-pending">
+                                    ⏳ Pendiente
+                                </div>
+
+                            {% endif %}
+
+                        {% else %}
+
+                            <div class="status status-pending">
+                                ⏳ Sin pronóstico
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    {% endwith %}
+
                 {% endfor %}
-            </table>
 
-            <br>
+            </div>
 
-            <button type="submit">💾 Guardar Predicciones</button>
-        </form>
+        {% endfor %}
 
-    </div>
+        <!-- SAVE -->
+
+        {% if now < fecha_cierre %}
+
+        <div class="save-container">
+
+            <button type="submit" class="save-btn">
+
+                💾 Guardar Predicciones
+
+            </button>
+
+        </div>
+
+        {% endif %}
+
+    </form>
 
 </div>
 
 <script>
-// =======================
-// CONTADOR
-// =======================
-const fechaCierre = new Date("{{ fecha_cierre|date:'Y-m-d H:i:s' }}").getTime();
+
+const fechaCierre = new Date(
+    "{{ fecha_cierre|date:'Y-m-d H:i:s' }}"
+).getTime();
+
 const contador = document.getElementById("contador");
 
-const intervalo = setInterval(function() {
+const intervalo = setInterval(function(){
 
     const ahora = new Date().getTime();
+
     const diferencia = fechaCierre - ahora;
 
-    if (diferencia <= 0) {
+    if(diferencia <= 0){
+
         clearInterval(intervalo);
-        contador.innerHTML = "🔒 Predicciones cerradas";
+
+        contador.innerHTML =
+            "🔒 Predicciones cerradas";
+
+        contador.classList.add("closed");
+
         return;
     }
 
-    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diferencia / (1000 * 60 * 60)) % 24);
-    const minutos = Math.floor((diferencia / (1000 * 60)) % 60);
-    const segundos = Math.floor((diferencia / 1000) % 60);
+    const dias =
+        Math.floor(diferencia / (1000*60*60*24));
+
+    const horas =
+        Math.floor((diferencia / (1000*60*60)) % 24);
+
+    const minutos =
+        Math.floor((diferencia / (1000*60)) % 60);
+
+    const segundos =
+        Math.floor((diferencia / 1000) % 60);
 
     contador.innerHTML =
         "⏳ Cierre en: " +
@@ -202,7 +508,8 @@ const intervalo = setInterval(function() {
         minutos + "m " +
         segundos + "s";
 
-}, 1000);
+},1000);
+
 </script>
 
 {% endblock %}

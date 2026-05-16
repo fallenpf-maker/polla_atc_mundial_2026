@@ -4,6 +4,8 @@ from .models import Prediction
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import datetime
+from itertools import groupby
+from django.db.models.functions import TruncDate
 
 FECHA_CIERRE_GRUPOS = timezone.make_aware(
     datetime(2026, 6, 11, 12, 0)
@@ -44,10 +46,30 @@ def mis_predicciones(request):
         p.partido.id: p for p in predicciones
     }
 
+    # 📅 Agrupar partidos por fecha
+    partidos_agrupados = []
+
+    partidos_ordenados = partidos.order_by('fecha_partido')
+
+    for fecha, items in groupby(
+        partidos_ordenados,
+        key=lambda x: x.fecha_partido.date()
+    ):
+
+        partidos_agrupados.append({
+            'fecha': fecha,
+            'partidos': list(items)
+        })
+
+    # 📦 Contexto
     contexto = {
-        'partidos': partidos,
+
+        'partidos_agrupados': partidos_agrupados,
+
         'pred_dict': pred_dict,
+
         'now': timezone.now(),
+
         'fecha_cierre': FECHA_CIERRE_GRUPOS
     }
 
