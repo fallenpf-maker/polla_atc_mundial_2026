@@ -130,3 +130,82 @@ def dashboard(request):
         }
 
     return render(request, 'dashboard/index.html', contexto)
+
+@login_required
+def estadisticas(request):
+
+    # 🏆 Ranking
+    ranking = (
+        User.objects
+        .annotate(
+            puntos_totales=Coalesce(
+                Sum('prediction__puntos_obtenidos'),
+                0
+            )
+        )
+        .order_by('-puntos_totales')
+    )
+
+    # 📅 Fechas únicas
+    fechas = list(
+        Match.objects
+        .filter(
+            goles_local__isnull=False,
+            goles_visitante__isnull=False
+        )
+        .annotate(fecha=TruncDate('fecha_partido'))
+        .values_list('fecha', flat=True)
+        .distinct()
+        .order_by('fecha')
+    )
+
+    # 👥 usuarios
+    usuarios = list(ranking)
+
+    # ⚡ predicciones
+    predicciones = Prediction.objects.select_related('partido').all()
+
+    # 📈 evolución
+    evolucion_usuarios = []
+
+    for user in usuarios:
+
+        acumulado = 0
+        puntos_acumulados = []
+
+        for fecha in fechas:
+
+            puntos = sum(
+                (p.puntos_obtenidos or 0)
+                for p in predicciones
+                if (
+                    p.usuario_id == user.id and
+                    p.partido.fecha_partido.date() == fecha
+                )
+            )
+
+            acumulado += puntos
+            puntos_acumulados.append(acumulado)
+
+        evolucion_usuarios.append({
+            'usuario': user.username,
+            'puntos': puntos_acumulados
+        })
+
+    contexto = {
+
+        'ranking': ranking,
+
+        'fechas': [
+            f.strftime('%d/%b')
+            for f in fechas
+        ],
+
+        'evolucion_usuarios': evolucion_usuarios,
+    }
+
+    return render(
+        request,
+        'dashboard/estadisticas.html',
+        contexto
+    )

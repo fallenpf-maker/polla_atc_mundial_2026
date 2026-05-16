@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+.page-title{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.card{
+    background: rgba(30,41,59,0.75);
+    backdrop-filter: blur(10px);
+
+    padding:20px;
+    border-radius:16px;
+    margin-bottom:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    padding:12px;
+    text-align:center;
+}
+
+th{
+    background: rgba(0,0,0,0.35);
+}
+
+</style>
+
+<div class="container">
+
+    <div class="page-title">
+        <h1>📊 Estadísticas y Ranking</h1>
+    </div>
+
+    <!-- RANKING -->
+
+    <div class="card">
+
+        <h2>🏆 Ranking General</h2>
+
+        <table>
+
+            <tr>
+                <th>#</th>
+                <th>Usuario</th>
+                <th>Puntos</th>
+            </tr>
+
+            {% for user in ranking %}
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>{{ user.username }}</td>
+
+                <td>{{ user.puntos_totales }}</td>
+
+            </tr>
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <!-- EVOLUCIÓN -->
+
+    <div class="card">
+
+        <h2>📈 Evolución de participantes</h2>
+
+        <canvas id="chartEvolucion"></canvas>
+
+    </div>
+
+</div>
+
+<script>
+
+const labels = [
+    {% for f in fechas %}
+        "{{ f|date:'d/M' }}",
+    {% endfor %}
+];
+
+const datasets = [
+
+{% for user in evolucion_usuarios %}
+{
+    label: "{{ user.usuario }}",
+    data: {{ user.puntos|safe }},
+    tension: 0.3
+},
+{% endfor %}
+
+];
+
+new Chart(
+    document.getElementById('chartEvolucion'),
+    {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+
+            responsive:true,
+
+            plugins:{
+                legend:{
+                    labels:{
+                        color:'white'
+                    }
+                }
+            },
+
+            scales:{
+
+                x:{
+                    ticks:{
+                        color:'white'
+                    }
+                },
+
+                y:{
+                    beginAtZero:true,
+                    ticks:{
+                        color:'white',
+                        precision:0
+                    }
+                }
+
+            }
+
+        }
+    }
+);
+
+</script>
+
+{% endblock %}
