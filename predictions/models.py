@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from matches.models import Match
 
-
 class Prediction(models.Model):
 
     METODOS = [
@@ -116,7 +115,7 @@ class Prediction(models.Model):
     def __str__(self):
         return f"{self.usuario} - {self.partido}"
     
-    class ChampionPrediction(models.Model):
+class ChampionPrediction(models.Model):
 
         usuario = models.OneToOneField(
             User,
@@ -131,5 +130,5 @@ class Prediction(models.Model):
             auto_now=True
         )
 
-    def __str__(self):
+def __str__(self):
         return f"{self.usuario} → {self.equipo_campeon}"
