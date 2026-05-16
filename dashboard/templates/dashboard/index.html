@@ -1,445 +1,317 @@
 {% extends "base.html" %}
 {% load static %}
-{% load custom_filters %}
 
 {% block content %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
+
 body {
-    font-family: Arial;
-    color: white;
-    padding: 20px;
 
     background:
-        linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)),
+        linear-gradient(rgba(15,23,42,0.88), rgba(15,23,42,0.96)),
         url("{% static 'images/fifa_bg.png' %}");
 
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+
+    color:white;
+    font-family: Arial;
 }
 
-.container {
-    max-width: 1100px;
-    margin: auto;
+.container{
+
+    max-width:1200px;
+    margin:auto;
+    padding:25px;
 }
 
-.card {
-    background: rgba(30, 41, 59, 0.75);
+.hero{
+
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.hero h1{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:#cbd5e1;
+    font-size:18px;
+}
+
+.grid{
+
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+
+    gap:20px;
+}
+
+.card{
+
+    background: rgba(30,41,59,0.72);
+
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
+    padding:25px;
+    border-radius:18px;
 
-    animation: fadeIn 0.6s ease-in-out;
+    box-shadow:0 8px 25px rgba(0,0,0,0.35);
+
+    transition:0.3s;
 }
 
-.card:hover {
-    transform: scale(1.01);
-    transition: 0.3s;
+.card:hover{
+
+    transform:translateY(-3px);
 }
 
-h1, h2 {
-    text-align: center;
+.kpi{
+
+    font-size:42px;
+    font-weight:bold;
+
+    margin-top:10px;
 }
 
-/* filtros */
-.filtros {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 15px;
+.green{ color:#22c55e; }
+.blue{ color:#3b82f6; }
+.red{ color:#ef4444; }
+.yellow{ color:#facc15; }
+
+.section-title{
+
+    margin-top:40px;
+    margin-bottom:20px;
+
+    font-size:28px;
 }
 
-.filtros label {
-    background: rgba(51, 65, 85, 0.8);
-    padding: 5px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
+.quick-actions{
+
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
 }
 
-/* botones */
-button {
-    padding: 6px 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background: #4CAF50;
-    color: white;
+.quick-actions a{
+
+    text-decoration:none;
 }
 
-/* ranking barras */
-.bar-container {
-    background: rgba(51, 65, 85, 0.6);
-    border-radius: 10px;
-    overflow: hidden;
+.action-btn{
+
+    padding:14px 20px;
+
+    border:none;
+    border-radius:14px;
+
+    color:white;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
 }
 
-.bar {
-    height: 8px;
-    background: linear-gradient(90deg, #ff4d4d, #ffd700, #4CAF50);
-    width: 0%;
-    transition: width 1s;
+.btn-pred{
+    background: linear-gradient(135deg,#22c55e,#16a34a);
 }
 
-/* tabla */
-table {
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(6px);
-    border-radius: 10px;
-    overflow: hidden;
+.btn-stats{
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
 }
 
-/* gráfico */
-canvas {
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
-    padding: 10px;
+.action-btn:hover{
+    transform:scale(1.03);
 }
 
-/* animación */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.rank-mini{
+
+    margin-top:20px;
 }
+
+.rank-item{
+
+    display:flex;
+    justify-content:space-between;
+
+    padding:12px;
+
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
 </style>
 
 <div class="container">
 
+    <!-- HERO -->
 
-    <!-- POSICIÓN -->
-    <div class="card" style="text-align:center; background: rgba(76,175,80,0.8);">
-        <h2>📊 Tu posición actual</h2>
-        <h1>
-            {% if mi_posicion %}
-                Estás en el puesto {{ mi_posicion }}
-            {% else %}
-                Sin posición aún
-            {% endif %}
-        </h1>
-    </div>
+    <div class="hero">
 
-    <!-- RESUMEN -->
-    <div class="card">
-        <h2>👤 Mi resumen</h2>
-        <div style="
-            background: linear-gradient(135deg, #16a34a, #22c55e);
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 20px rgba(34,197,94,0.35);
-        ">
+        <h1>⚽ Polla ATC Mundial 2026</h1>
 
-            <div style="
-                font-size:18px;
-                opacity:0.9;
-                margin-bottom:8px;
-            ">
-                🏆 Puntos acumulados
-        </div>
-
-        <div style="
-            font-size:54px;
-            font-weight:bold;
-            line-height:1;
-        ">
-            {{ mis_puntos }}
-        </div>
-
-    </div>
-        <p><strong>Predicciones:</strong> {{ cantidad_predicciones }}</p>
         <p>
-    <div class="card">
+            Vive la emoción del Mundial y compite por el primer lugar
+        </p>
 
-        <h2>📊 Rendimiento</h2>
-    
-        <div style="text-align:center; margin-bottom:30px;">
-    
-            <div style="
-                font-size:60px;
-                font-weight:bold;
-                color:#4ade80;
-            ">
+    </div>
+
+    <!-- KPIs -->
+
+    <div class="grid">
+
+        <div class="card">
+
+            <h3>🏆 Puntos Totales</h3>
+
+            <div class="kpi green">
+                {{ mis_puntos }}
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>🥇 Posición</h3>
+
+            <div class="kpi yellow">
+                #{{ mi_posicion }}
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>🎯 Tasa de acierto</h3>
+
+            <div class="kpi blue">
                 {{ tasa_acierto }}%
             </div>
-    
-            <div style="font-size:18px; opacity:0.9;">
-                Tasa de acierto
-            </div>
-    
+
         </div>
-    
-        <div style="
-            display:grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap:20px;
-            text-align:center;
-        ">
-    
-            <!-- EXACTOS -->
-            <div style="
-                background:rgba(34,197,94,0.15);
-                padding:20px;
-                border-radius:12px;
-            ">
-                <div style="font-size:40px;">✅</div>
-    
-                <div style="
-                    font-size:32px;
-                    font-weight:bold;
-                    color:#4ade80;
-                ">
-                    {{ porc_exactos }}%
-                </div>
-    
-                <div>
-                    Exactos
-                </div>
-    
-                <div style="opacity:0.7;">
-                    {{ exactos }} partidos
-                </div>
+
+        <div class="card">
+
+            <h3>📝 Pronósticos</h3>
+
+            <div class="kpi">
+                {{ cantidad_predicciones }}
             </div>
-    
-            <!-- PARCIALES -->
-            <div style="
-                background:rgba(251,191,36,0.15);
-                padding:20px;
-                border-radius:12px;
-            ">
-                <div style="font-size:40px;">🟨</div>
-    
-                <div style="
-                    font-size:32px;
-                    font-weight:bold;
-                    color:#facc15;
-                ">
-                    {{ porc_parciales }}%
-                </div>
-    
-                <div>
-                    Parciales
-                </div>
-    
-                <div style="opacity:0.7;">
-                    {{ parciales }} partidos
-                </div>
-            </div>
-    
-            <!-- FALLADOS -->
-            <div style="
-                background:rgba(239,68,68,0.15);
-                padding:20px;
-                border-radius:12px;
-            ">
-                <div style="font-size:40px;">❌</div>
-    
-                <div style="
-                    font-size:32px;
-                    font-weight:bold;
-                    color:#f87171;
-                ">
-                    {{ porc_fallados }}%
-                </div>
-    
-                <div>
-                    Fallados
-                </div>
-    
-                <div style="opacity:0.7;">
-                    {{ fallados }} partidos
-                </div>
-            </div>
-    
+
         </div>
-    
+
     </div>
 
-    <!-- GRÁFICO -->
-    <div class="card">
-        <h2>📈 Evolución de participantes</h2>
+    <!-- RESULTADOS -->
 
-        <div class="filtros">
-            <button onclick="mostrarTop()">Top 5 + Yo</button>
-            <button onclick="mostrarTodos()">Mostrar todos</button>
+    <h2 class="section-title">
+        📊 Rendimiento
+    </h2>
+
+    <div class="grid">
+
+        <div class="card">
+
+            <h3>✅ Exactos</h3>
+
+            <div class="kpi green">
+                {{ exactos }}
+            </div>
+
+            <p>
+                {{ porc_exactos }}%
+            </p>
+
         </div>
 
-        <div id="filtrosUsuarios" class="filtros"></div>
+        <div class="card">
 
-        <canvas id="grafico"></canvas>
+            <h3>🟡 Parciales</h3>
+
+            <div class="kpi yellow">
+                {{ parciales }}
+            </div>
+
+            <p>
+                {{ porc_parciales }}%
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>❌ Fallados</h3>
+
+            <div class="kpi red">
+                {{ fallados }}
+            </div>
+
+            <p>
+                {{ porc_fallados }}%
+            </p>
+
+        </div>
+
     </div>
 
-    <!-- RANKING -->
-    <div class="card">
-        <h2>🏆 Ranking</h2>
+    <!-- ACCIONES -->
 
-        {% for user in ranking %}
-        <div style="margin-bottom:10px;">
-            <strong>
-                {% if forloop.counter == 1 %}🥇
-                {% elif forloop.counter == 2 %}🥈
-                {% elif forloop.counter == 3 %}🥉
-                {% endif %}
+    <h2 class="section-title">
+        ⚡ Acciones rápidas
+    </h2>
 
+    <div class="quick-actions">
+
+        <a href="/predicciones/">
+
+            <button class="action-btn btn-pred">
+                📝 Ir a Predicciones
+            </button>
+
+        </a>
+
+        <a href="/estadisticas/">
+
+            <button class="action-btn btn-stats">
+                📊 Ver Estadísticas
+            </button>
+
+        </a>
+
+    </div>
+
+    <!-- TOP 5 -->
+
+    <h2 class="section-title">
+        🏆 Top Participantes
+    </h2>
+
+    <div class="card rank-mini">
+
+        {% for user in ranking|slice:":5" %}
+
+        <div class="rank-item">
+
+            <div>
+                #{{ forloop.counter }}
                 {{ user.username }}
-                {% if user == request.user %} ⭐{% endif %}
+            </div>
+
+            <strong>
+                {{ user.puntos_totales }} pts
             </strong>
 
-            ({{ user.puntos_totales|default:0 }} pts)
-
-            <div class="bar-container">
-                <div class="bar"
-                     data-width="{{ user.puntos_totales|default:0|porcentaje:max_puntos }}">
-                </div>
-            </div>
         </div>
+
         {% endfor %}
+
     </div>
 
 </div>
-
-<script>
-// =======================
-// DATOS DJANGO
-// =======================
-const fechas = {{ fechas|safe }};
-const usuarios = {{ evolucion_usuarios|safe }};
-const usuarioActual = "{{ request.user.username }}";
-
-// =======================
-// COLORES
-// =======================
-function colorRandom(i) {
-    const colores = [
-        '#ff4d4d','#4CAF50','#2196F3','#FFD700',
-        '#9C27B0','#FF9800','#00BCD4','#E91E63'
-    ];
-    return colores[i % colores.length];
-}
-
-// =======================
-// CHECKBOXES
-// =======================
-const contenedor = document.getElementById('filtrosUsuarios');
-
-usuarios.forEach(u => {
-    const label = document.createElement('label');
-
-    label.innerHTML = `
-        <input type="checkbox" value="${u.usuario}" checked>
-        ${u.usuario}
-    `;
-
-    contenedor.appendChild(label);
-});
-
-// =======================
-// DATASETS
-// =======================
-function crearDatasets(lista) {
-    return usuarios
-        .filter(u => lista.includes(u.usuario))
-        .map((u, i) => ({
-            label: u.usuario,
-            data: u.puntos,
-            borderColor: u.usuario === usuarioActual ? '#ffffff' : colorRandom(i),
-            borderWidth: u.usuario === usuarioActual ? 4 : 2,
-            tension: 0.3
-        }));
-}
-
-// =======================
-// CHART
-// =======================
-let chart;
-
-function renderChart(listaUsuarios) {
-
-    if (chart) chart.destroy();
-
-    chart = new Chart(document.getElementById('grafico'), {
-        type: 'line',
-        data: {
-            labels: fechas,
-            datasets: crearDatasets(listaUsuarios)
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: { color: 'white' }
-                }
-            },
-            scales: {
-                x: { ticks: { color: 'white' }},
-                y: {
-                    beginAtZero: true,
-                    min: 0,
-
-                    ticks: {
-                        color: 'white',
-                        precision: 0
-                    }
-                }
-            }
-        }
-    });
-}
-
-// =======================
-// UTILIDADES
-// =======================
-function getSeleccionados() {
-    return Array.from(
-        document.querySelectorAll('#filtrosUsuarios input:checked')
-    ).map(i => i.value);
-}
-
-contenedor.addEventListener('change', () => {
-    renderChart(getSeleccionados());
-});
-
-function mostrarTop() {
-    const top = usuarios.slice(0, 5).map(u => u.usuario);
-
-    if (!top.includes(usuarioActual)) {
-        top.push(usuarioActual);
-    }
-
-    marcarChecks(top);
-    renderChart(top);
-}
-
-function mostrarTodos() {
-    const todos = usuarios.map(u => u.usuario);
-    marcarChecks(todos);
-    renderChart(todos);
-}
-
-function marcarChecks(lista) {
-    document.querySelectorAll('#filtrosUsuarios input').forEach(i => {
-        i.checked = lista.includes(i.value);
-    });
-}
-
-// =======================
-// INIT
-// =======================
-mostrarTop();
-
-// animación barras
-document.querySelectorAll('.bar').forEach(bar => {
-    let width = bar.getAttribute('data-width');
-    setTimeout(() => {
-        bar.style.width = width + "%";
-    }, 300);
-});
-</script>
 
 {% endblock %}
