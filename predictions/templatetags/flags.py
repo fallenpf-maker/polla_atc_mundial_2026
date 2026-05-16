@@ -6,7 +6,7 @@ FLAGS = {
 
     # ANFITRIONES
     'Estados Unidos': 'us',
-    'Mexico': 'mx',
+    'México': 'mx',
     'Canada': 'ca',
     'Canadá': 'ca',
 

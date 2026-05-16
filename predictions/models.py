@@ -115,3 +115,21 @@ class Prediction(models.Model):
 
     def __str__(self):
         return f"{self.usuario} - {self.partido}"
+    
+    class ChampionPrediction(models.Model):
+
+        usuario = models.OneToOneField(
+            User,
+            on_delete=models.CASCADE
+        )
+
+        equipo_campeon = models.CharField(
+            max_length=100
+        )
+
+        fecha_registro = models.DateTimeField(
+            auto_now=True
+        )
+
+    def __str__(self):
+        return f"{self.usuario} → {self.equipo_campeon}"
