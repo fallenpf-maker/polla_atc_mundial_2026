@@ -7,18 +7,51 @@
 
 <style>
 
+body {
+
+    background:
+        linear-gradient(rgba(15,23,42,0.88), rgba(15,23,42,0.96)),
+        url("{% static 'images/fifa_bg.png' %}");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    color: white;
+    font-family: Arial;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
 .page-title{
     text-align:center;
     margin-bottom:30px;
 }
 
 .card{
-    background: rgba(30,41,59,0.75);
+
+    background: rgba(30,41,59,0.72);
+
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 
     padding:20px;
-    border-radius:16px;
-    margin-bottom:20px;
+    border-radius:18px;
+
+    margin-bottom:25px;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+
+    animation: fadeIn 0.5s ease;
+}
+
+.card:hover{
+    transform: translateY(-2px);
+    transition:0.3s;
 }
 
 table{
@@ -27,7 +60,7 @@ table{
 }
 
 th, td{
-    padding:12px;
+    padding:14px;
     text-align:center;
 }
 
@@ -35,12 +68,88 @@ th{
     background: rgba(0,0,0,0.35);
 }
 
+.rank-bar-bg{
+
+    width:100%;
+    background: rgba(255,255,255,0.08);
+
+    border-radius:10px;
+    overflow:hidden;
+
+    height:24px;
+}
+
+.rank-bar{
+
+    height:100%;
+    background: linear-gradient(90deg,#22c55e,#16a34a);
+
+    text-align:right;
+    padding-right:10px;
+
+    font-weight:bold;
+    line-height:24px;
+
+    color:white;
+}
+
+.btn-home{
+
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+
+    border:none;
+    color:white;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:0 4px 12px rgba(37,99,235,0.35);
+
+    transition:0.3s;
+}
+
+.btn-home:hover{
+    transform:scale(1.03);
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
 </style>
 
 <div class="container">
 
+    <!-- HEADER -->
+
     <div class="page-title">
+
         <h1>📊 Estadísticas y Ranking</h1>
+
+        <br>
+
+        <a href="/">
+
+            <button class="btn-home">
+                🏠 Volver al Inicio
+            </button>
+
+        </a>
+
     </div>
 
     <!-- RANKING -->
@@ -53,20 +162,45 @@ th{
 
             <tr>
                 <th>#</th>
-                <th>Usuario</th>
+                <th>Participante</th>
                 <th>Puntos</th>
+                <th>Progreso</th>
             </tr>
 
             {% for user in ranking %}
+
             <tr>
 
-                <td>{{ forloop.counter }}</td>
+                <td>
+                    {{ forloop.counter }}
+                </td>
 
-                <td>{{ user.username }}</td>
+                <td>
+                    {{ user.username }}
+                </td>
 
-                <td>{{ user.puntos_totales }}</td>
+                <td>
+                    <strong>{{ user.puntos_totales }}</strong>
+                </td>
+
+                <td style="width:40%;">
+
+                    <div class="rank-bar-bg">
+
+                        <div class="rank-bar"
+                             style="width:
+                             {% widthratio user.puntos_totales ranking.0.puntos_totales 100 %}%">
+
+                            {{ user.puntos_totales }}
+
+                        </div>
+
+                    </div>
+
+                </td>
 
             </tr>
+
             {% endfor %}
 
         </table>
@@ -77,7 +211,7 @@ th{
 
     <div class="card">
 
-        <h2>📈 Evolución de participantes</h2>
+        <h2>📈 Evolución acumulada</h2>
 
         <canvas id="chartEvolucion"></canvas>
 
@@ -88,41 +222,54 @@ th{
 <script>
 
 const labels = [
-    {% for f in fechas %}
-        "{{ f|date:'d/M' }}",
-    {% endfor %}
+
+{% for f in fechas %}
+    "{{ f }}",
+{% endfor %}
+
 ];
 
 const datasets = [
 
 {% for user in evolucion_usuarios %}
+
 {
     label: "{{ user.usuario }}",
     data: {{ user.puntos|safe }},
     tension: 0.3
 },
+
 {% endfor %}
 
 ];
 
 new Chart(
+
     document.getElementById('chartEvolucion'),
+
     {
+
         type: 'line',
+
         data: {
+
             labels: labels,
+
             datasets: datasets
         },
+
         options: {
 
             responsive:true,
 
             plugins:{
+
                 legend:{
                     labels:{
                         color:'white'
                     }
                 }
+
             },
 
             scales:{
@@ -134,17 +281,22 @@ new Chart(
                 },
 
                 y:{
+
                     beginAtZero:true,
+
                     ticks:{
                         color:'white',
                         precision:0
                     }
+
                 }
 
             }
 
         }
+
     }
+
 );
 
 </script>
