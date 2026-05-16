@@ -1,283 +1,349 @@
 {% extends "base.html" %}
 {% load static %}
 {% load custom_filters %}
+{% load flags %}
 
 {% block content %}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 
-body{
+body {
+    font-family: Arial;
+    color: white;
+    margin: 0;
 
     background:
-        linear-gradient(rgba(15,23,42,0.86), rgba(15,23,42,0.95)),
+        linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.92)),
         url("{% static 'images/fifa_bg.png' %}");
 
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
-
-    font-family:Arial;
-    color:white;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-.container{
-
-    max-width:1200px;
-    margin:auto;
-    padding:25px;
+.container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 20px;
 }
 
-.hero{
+/* NAVBAR */
 
-    text-align:center;
-    margin-bottom:35px;
+.navbar {
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(12px);
+
+    padding: 14px 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+
+    position: sticky;
+    top: 0;
+    z-index: 999;
 }
 
-.hero h1{
-
-    font-size:42px;
-    margin-bottom:10px;
+.logo {
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.hero p{
-
-    color:#cbd5e1;
-    font-size:18px;
+.nav-links {
+    display: flex;
+    gap: 18px;
+    align-items: center;
 }
 
-.fecha-card{
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
 
-    margin-top:40px;
-    margin-bottom:20px;
+    padding: 10px 14px;
+    border-radius: 10px;
+
+    transition: 0.25s;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.logout-btn {
+    background: rgba(220, 38, 38, 0.25);
+}
+
+.logout-btn:hover {
+    background: rgba(220, 38, 38, 0.45);
+}
+
+/* HERO */
+
+.hero {
+    text-align: center;
+    padding: 20px;
+}
+
+.hero h1 {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #d1d5db;
+    font-size: 20px;
+}
+
+/* CONTADOR */
+
+.countdown {
+    font-size: 24px;
+    font-weight: bold;
+    color: #facc15;
+    margin-top: 15px;
+}
+
+/* FECHA */
+
+.fecha-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 30px 0 20px;
 
     background: rgba(255,255,255,0.08);
 
-    padding:14px 20px;
+    padding: 14px 18px;
 
-    border-radius:14px;
-
-    font-size:22px;
-    font-weight:bold;
+    border-radius: 16px;
 
     backdrop-filter: blur(10px);
 }
 
-.partidos-grid{
+/* GRID */
 
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-
-    gap:20px;
+.matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 22px;
 }
 
-.match-card{
+/* CARD */
 
-    background: rgba(30,41,59,0.72);
+.match-card {
+
+    background: rgba(30, 41, 59, 0.72);
 
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
 
-    border-radius:22px;
+    border-radius: 22px;
 
-    padding:25px;
+    padding: 24px;
 
-    box-shadow:0 8px 30px rgba(0,0,0,0.35);
+    transition: 0.3s;
 
-    transition:0.3s;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.25);
+
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-.match-card:hover{
-
-    transform:translateY(-4px);
+.match-card:hover {
+    transform: translateY(-4px);
 }
 
-.match-time{
+/* HORA */
 
-    text-align:center;
-    color:#cbd5e1;
-
-    margin-bottom:20px;
+.match-time {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    color: #d1d5db;
 }
 
-.teams{
+/* EQUIPOS */
 
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    gap:15px;
+.teams {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 20px;
 }
 
-.team{
-
-    width:40%;
-    text-align:center;
+.team {
+    text-align: center;
 }
 
-.team-name{
+.team img {
+    width: 74px;
+    height: 54px;
+    object-fit: cover;
 
-    margin-top:10px;
-    font-weight:bold;
-    font-size:17px;
+    border-radius: 12px;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.35);
+
+    margin-bottom: 12px;
 }
 
-.vs{
-
-    font-size:24px;
-    font-weight:bold;
+.team-name {
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.inputs{
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    gap:10px;
-
-    margin-top:20px;
+.vs {
+    font-size: 28px;
+    font-weight: bold;
 }
 
-.score-input{
+/* INPUTS */
 
-    width:70px;
-    height:60px;
+.score-inputs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    border:none;
-    border-radius:16px;
+    gap: 10px;
 
-    text-align:center;
+    margin-top: 26px;
+}
 
-    font-size:26px;
-    font-weight:bold;
+.score-inputs input {
+
+    width: 70px;
+    height: 60px;
+
+    border-radius: 18px;
+
+    border: none;
 
     background: rgba(255,255,255,0.10);
 
-    color:white;
+    color: white;
 
-    backdrop-filter: blur(10px);
+    text-align: center;
 
-    outline:none;
+    font-size: 24px;
+    font-weight: bold;
 
-    transition:0.3s;
+    outline: none;
+
+    transition: 0.25s;
 }
 
-.score-input:focus{
+.score-inputs input:focus {
 
     background: rgba(255,255,255,0.18);
 
-    transform:scale(1.05);
+    transform: scale(1.05);
+
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,0.35);
 }
 
-.status{
-
-    margin-top:20px;
-
-    text-align:center;
-
-    padding:10px;
-
-    border-radius:12px;
-
-    font-weight:bold;
+.separator {
+    font-size: 30px;
+    font-weight: bold;
 }
 
-.status-pending{
+/* STATUS */
 
-    background: rgba(59,130,246,0.18);
-    color:#93c5fd;
+.status-box {
+
+    margin-top: 26px;
+
+    padding: 12px;
+
+    border-radius: 14px;
+
+    text-align: center;
+
+    font-weight: bold;
+
+    font-size: 16px;
 }
 
-.status-exact{
-
+.saved {
     background: rgba(34,197,94,0.18);
-    color:#86efac;
+    color: #4ade80;
 }
 
-.status-partial{
-
-    background: rgba(250,204,21,0.18);
-    color:#fde68a;
+.empty {
+    background: rgba(59,130,246,0.15);
+    color: #93c5fd;
 }
 
-.status-failed{
+/* BOTON */
 
-    background: rgba(239,68,68,0.18);
-    color:#fca5a5;
+.save-container {
+    text-align: center;
+    margin-top: 40px;
 }
 
-.save-container{
+.save-btn {
 
-    text-align:center;
-    margin-top:40px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+
+    color: white;
+
+    border: none;
+
+    padding: 18px 42px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    border-radius: 18px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    box-shadow:
+        0 10px 25px rgba(34,197,94,0.25);
 }
 
-.save-btn{
-
-    padding:18px 35px;
-
-    border:none;
-    border-radius:16px;
-
-    font-size:18px;
-    font-weight:bold;
-
-    cursor:pointer;
-
-    color:white;
-
-    background: linear-gradient(135deg,#22c55e,#16a34a);
-
-    box-shadow:0 8px 25px rgba(34,197,94,0.35);
-
-    transition:0.3s;
-}
-
-.save-btn:hover{
-
-    transform:scale(1.04);
-}
-
-.locked{
-
-    opacity:0.6;
-    pointer-events:none;
-}
-
-.contador{
-
-    text-align:center;
-
-    margin-top:20px;
-    margin-bottom:40px;
-
-    font-size:22px;
-    font-weight:bold;
-
-    color:#facc15;
-}
-
-.closed{
-
-    color:#ef4444;
-}
-
-@media(max-width:768px){
-
-    .teams{
-        flex-direction:column;
-    }
-
-    .team{
-        width:100%;
-    }
-
-    .vs{
-        margin:10px 0;
-    }
+.save-btn:hover {
+    transform: translateY(-2px) scale(1.02);
 }
 
 </style>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <div class="logo">
+        ⚽ Polla ATC 2026
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">
+            🏠 Inicio
+        </a>
+
+        <a href="/predicciones/">
+            📝 Predicciones
+        </a>
+
+        <a href="/estadisticas/">
+            📊 Estadísticas
+        </a>
+
+        <a href="/logout/" class="logout-btn">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</div>
 
 <div class="container">
 
@@ -285,179 +351,131 @@ body{
 
     <div class="hero">
 
-        <h1>⚽ Mis Predicciones</h1>
-
         <p>
             Completa tus pronósticos antes del cierre oficial
         </p>
 
+        <div id="contador" class="countdown"></div>
+
     </div>
-
-    <!-- CONTADOR -->
-
-    <div id="contador" class="contador"></div>
-
-    <!-- FORM -->
 
     <form method="post">
 
         {% csrf_token %}
 
-        {% for grupo in partidos_agrupados %}
+        {% regroup partidos by fecha_partido.date as partidos_por_fecha %}
 
-            <!-- FECHA -->
+        {% for grupo in partidos_por_fecha %}
 
-            <div class="fecha-card">
+        <div class="fecha-title">
+            📅 {{ grupo.grouper|date:"d M Y" }}
+        </div>
 
-                📅 {{ grupo.fecha|date:"d M Y" }}
+        <div class="matches-grid">
 
-            </div>
+            {% for partido in grupo.list %}
 
-            <!-- PARTIDOS -->
+            {% with pred=pred_dict|get_item:partido.id %}
 
-            <div class="partidos-grid">
+            <div class="match-card">
 
-                {% for partido in grupo.partidos %}
+                <div class="match-time">
+                    {{ partido.fecha_partido|date:"H:i" }}
+                </div>
 
-                    {% with pred=pred_dict|get_item:partido.id %}
+                <div class="teams">
 
-                    <div class="match-card {% if now >= fecha_cierre %}locked{% endif %}">
+                    <!-- LOCAL -->
 
-                        <div class="match-time">
+                    <div class="team">
 
-                            {{ partido.fecha_partido|date:"H:i" }}
+                        <img
+                            src="https://flagcdn.com/w160/{{ partido.equipo_local|flag_code }}.png"
+                        >
 
+                        <div class="team-name">
+                            {{ partido.equipo_local }}
                         </div>
-
-                        <div class="teams">
-
-                            <div class="team">
-
-                                <div style="font-size:55px;">🏳️</div>
-
-                                <div class="team-name">
-
-                                    {{ partido.equipo_local }}
-
-                                </div>
-
-                            </div>
-
-                            <div class="vs">
-                                VS
-                            </div>
-
-                            <div class="team">
-
-                                <div style="font-size:55px;">🏳️</div>
-
-                                <div class="team-name">
-
-                                    {{ partido.equipo_visitante }}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- INPUTS -->
-
-                        <div class="inputs">
-
-                            <input
-                                type="number"
-                                min="0"
-
-                                class="score-input"
-
-                                name="local_{{ partido.id }}"
-
-                                value="{% if pred %}{{ pred.pred_local }}{% endif %}"
-
-                                {% if now >= fecha_cierre %}disabled{% endif %}
-                            >
-
-                            <span style="font-size:24px;">-</span>
-
-                            <input
-                                type="number"
-                                min="0"
-
-                                class="score-input"
-
-                                name="visitante_{{ partido.id }}"
-
-                                value="{% if pred %}{{ pred.pred_visitante }}{% endif %}"
-
-                                {% if now >= fecha_cierre %}disabled{% endif %}
-                            >
-
-                        </div>
-
-                        <!-- STATUS -->
-
-                        {% if pred %}
-
-                            {% if pred.puntos_obtenidos == 3 %}
-
-                                <div class="status status-exact">
-                                    ✅ Exacto (+3)
-                                </div>
-
-                            {% elif pred.puntos_obtenidos == 1 %}
-
-                                <div class="status status-partial">
-                                    🟡 Parcial (+1)
-                                </div>
-
-                            {% elif pred.puntos_obtenidos == 0 %}
-
-                                <div class="status status-failed">
-                                    ❌ Fallado
-                                </div>
-
-                            {% else %}
-
-                                <div class="status status-pending">
-                                    ⏳ Pendiente
-                                </div>
-
-                            {% endif %}
-
-                        {% else %}
-
-                            <div class="status status-pending">
-                                ⏳ Sin pronóstico
-                            </div>
-
-                        {% endif %}
 
                     </div>
 
-                    {% endwith %}
+                    <!-- VS -->
 
-                {% endfor %}
+                    <div class="vs">
+                        VS
+                    </div>
+
+                    <!-- VISITANTE -->
+
+                    <div class="team">
+
+                        <img
+                            src="https://flagcdn.com/w160/{{ partido.equipo_visitante|flag_code }}.png"
+                        >
+
+                        <div class="team-name">
+                            {{ partido.equipo_visitante }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- INPUTS -->
+
+                <div class="score-inputs">
+
+                    <input
+                        type="number"
+                        name="local_{{ partido.id }}"
+                        value="{{ pred.pred_local|default_if_none:'' }}"
+                        min="0"
+                    >
+
+                    <div class="separator">-</div>
+
+                    <input
+                        type="number"
+                        name="visitante_{{ partido.id }}"
+                        value="{{ pred.pred_visitante|default_if_none:'' }}"
+                        min="0"
+                    >
+
+                </div>
+
+                <!-- STATUS -->
+
+                {% if pred %}
+
+                    <div class="status-box saved">
+                        ⏳ Pronóstico guardado
+                    </div>
+
+                {% else %}
+
+                    <div class="status-box empty">
+                        📝 Sin pronóstico
+                    </div>
+
+                {% endif %}
 
             </div>
 
+            {% endwith %}
+
+            {% endfor %}
+
+        </div>
+
         {% endfor %}
-
-        <!-- SAVE -->
-
-        {% if now < fecha_cierre %}
 
         <div class="save-container">
 
             <button type="submit" class="save-btn">
-
                 💾 Guardar Predicciones
-
             </button>
 
         </div>
-
-        {% endif %}
 
     </form>
 
@@ -465,38 +483,40 @@ body{
 
 <script>
 
+// =======================
+// CONTADOR
+// =======================
+
 const fechaCierre = new Date(
     "{{ fecha_cierre|date:'Y-m-d H:i:s' }}"
 ).getTime();
 
 const contador = document.getElementById("contador");
 
-const intervalo = setInterval(function(){
+const intervalo = setInterval(function() {
 
     const ahora = new Date().getTime();
 
     const diferencia = fechaCierre - ahora;
 
-    if(diferencia <= 0){
+    if (diferencia <= 0) {
 
         clearInterval(intervalo);
 
         contador.innerHTML =
             "🔒 Predicciones cerradas";
 
-        contador.classList.add("closed");
-
         return;
     }
 
     const dias =
-        Math.floor(diferencia / (1000*60*60*24));
+        Math.floor(diferencia / (1000 * 60 * 60 * 24));
 
     const horas =
-        Math.floor((diferencia / (1000*60*60)) % 24);
+        Math.floor((diferencia / (1000 * 60 * 60)) % 24);
 
     const minutos =
-        Math.floor((diferencia / (1000*60)) % 60);
+        Math.floor((diferencia / (1000 * 60)) % 60);
 
     const segundos =
         Math.floor((diferencia / 1000) % 60);
@@ -508,7 +528,7 @@ const intervalo = setInterval(function(){
         minutos + "m " +
         segundos + "s";
 
-},1000);
+}, 1000);
 
 </script>
 
