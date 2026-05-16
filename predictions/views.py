@@ -4,8 +4,7 @@ from .models import Prediction
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import datetime
-from itertools import groupby
-from django.db.models.functions import TruncDate
+from collections import defaultdict
 
 FECHA_CIERRE_GRUPOS = timezone.make_aware(
     datetime(2026, 6, 11, 12, 0)
@@ -14,11 +13,20 @@ FECHA_CIERRE_GRUPOS = timezone.make_aware(
 @login_required
 def mis_predicciones(request):
 
-    partidos = Match.objects.filter(fase='GRUPOS').order_by('fecha_partido')
+    # 🏆 Partidos fase grupos
+    partidos = (
+        Match.objects
+        .filter(fase='GRUPOS')
+        .order_by('fecha_partido')
+    )
+
+    # ==========================
+    # GUARDAR PREDICCIONES
+    # ==========================
 
     if request.method == 'POST':
 
-    # 🚫 BLOQUEO GLOBAL TOTAL
+        # 🚫 bloqueo global
         if timezone.now() >= FECHA_CIERRE_GRUPOS:
             return redirect('mis_predicciones')
 
@@ -27,6 +35,7 @@ def mis_predicciones(request):
             local = request.POST.get(f'local_{partido.id}')
             visitante = request.POST.get(f'visitante_{partido.id}')
 
+            # ✅ permitir 0 como valor válido
             if local != '' and visitante != '':
 
                 Prediction.objects.update_or_create(
@@ -40,31 +49,38 @@ def mis_predicciones(request):
 
         return redirect('mis_predicciones')
 
-    predicciones = Prediction.objects.filter(usuario=request.user)
+    # ==========================
+    # PREDICCIONES DEL USUARIO
+    # ==========================
+
+    predicciones = Prediction.objects.filter(
+        usuario=request.user
+    )
 
     pred_dict = {
-        p.partido.id: p for p in predicciones
+        p.partido.id: p
+        for p in predicciones
     }
 
-    # 📅 Agrupar partidos por fecha
-    partidos_agrupados = []
+    # ==========================
+    # AGRUPAR PARTIDOS POR FECHA
+    # ==========================
 
-    partidos_ordenados = partidos.order_by('fecha_partido')
+    partidos_por_fecha = defaultdict(list)
 
-    for fecha, items in groupby(
-        partidos_ordenados,
-        key=lambda x: x.fecha_partido.date()
-    ):
+    for partido in partidos:
 
-        partidos_agrupados.append({
-            'fecha': fecha,
-            'partidos': list(items)
-        })
+        fecha = partido.fecha_partido.date()
 
-    # 📦 Contexto
+        partidos_por_fecha[fecha].append(partido)
+
+    # ==========================
+    # CONTEXTO
+    # ==========================
+
     contexto = {
 
-        'partidos_agrupados': partidos_agrupados,
+        'partidos_por_fecha': dict(partidos_por_fecha),
 
         'pred_dict': pred_dict,
 
@@ -73,4 +89,8 @@ def mis_predicciones(request):
         'fecha_cierre': FECHA_CIERRE_GRUPOS
     }
 
-    return render(request, 'predictions/mis_predicciones.html', contexto)
+    return render(
+        request,
+        'predictions/mis_predicciones.html',
+        contexto
+    )

@@ -363,107 +363,109 @@ body {
 
         {% csrf_token %}
 
-        {% regroup partidos by fecha_partido.date as partidos_por_fecha %}
+        {% for fecha, lista_partidos in partidos_por_fecha.items %}
 
-        {% for grupo in partidos_por_fecha %}
+<div class="fecha-title">
+    📅 {{ fecha|date:"d M Y" }}
+</div>
 
-        <div class="fecha-title">
-            📅 {{ grupo.grouper|date:"d M Y" }}
+<div class="matches-grid">
+
+    {% for partido in lista_partidos %}
+
+    {% with pred=pred_dict|get_item:partido.id %}
+
+    <div class="match-card">
+
+        <div class="match-time">
+            {{ partido.fecha_partido|date:"H:i" }}
         </div>
 
-        <div class="matches-grid">
+        <div class="teams">
 
-            {% for partido in grupo.list %}
+            <!-- LOCAL -->
 
-            {% with pred=pred_dict|get_item:partido.id %}
+            <div class="team">
 
-            <div class="match-card">
+                <img
+                    src="https://flagcdn.com/w160/{{ partido.equipo_local|flag_code }}.png"
+                >
 
-                <div class="match-time">
-                    {{ partido.fecha_partido|date:"H:i" }}
+                <div class="team-name">
+                    {{ partido.equipo_local }}
                 </div>
-
-                <div class="teams">
-
-                    <!-- LOCAL -->
-
-                    <div class="team">
-
-                        <img
-                            src="https://flagcdn.com/w160/{{ partido.equipo_local|flag_code }}.png"
-                        >
-
-                        <div class="team-name">
-                            {{ partido.equipo_local }}
-                        </div>
-
-                    </div>
-
-                    <!-- VS -->
-
-                    <div class="vs">
-                        VS
-                    </div>
-
-                    <!-- VISITANTE -->
-
-                    <div class="team">
-
-                        <img
-                            src="https://flagcdn.com/w160/{{ partido.equipo_visitante|flag_code }}.png"
-                        >
-
-                        <div class="team-name">
-                            {{ partido.equipo_visitante }}
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- INPUTS -->
-
-                <div class="score-inputs">
-
-                    <input
-                        type="number"
-                        name="local_{{ partido.id }}"
-                        value="{{ pred.pred_local|default_if_none:'' }}"
-                        min="0"
-                    >
-
-                    <div class="separator">-</div>
-
-                    <input
-                        type="number"
-                        name="visitante_{{ partido.id }}"
-                        value="{{ pred.pred_visitante|default_if_none:'' }}"
-                        min="0"
-                    >
-
-                </div>
-
-                <!-- STATUS -->
-
-                {% if pred %}
-
-                    <div class="status-box saved">
-                        ⏳ Pronóstico guardado
-                    </div>
-
-                {% else %}
-
-                    <div class="status-box empty">
-                        📝 Sin pronóstico
-                    </div>
-
-                {% endif %}
 
             </div>
 
-            {% endwith %}
+            <!-- VS -->
 
-            {% endfor %}
+            <div class="vs">
+                VS
+            </div>
+
+            <!-- VISITANTE -->
+
+            <div class="team">
+
+                <img
+                    src="https://flagcdn.com/w160/{{ partido.equipo_visitante|flag_code }}.png"
+                >
+
+                <div class="team-name">
+                    {{ partido.equipo_visitante }}
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- INPUTS -->
+
+        <div class="score-inputs">
+
+            <input
+                type="number"
+                name="local_{{ partido.id }}"
+                value="{{ pred.pred_local|default_if_none:'' }}"
+                min="0"
+            >
+
+            <div class="separator">-</div>
+
+            <input
+                type="number"
+                name="visitante_{{ partido.id }}"
+                value="{{ pred.pred_visitante|default_if_none:'' }}"
+                min="0"
+            >
+
+        </div>
+
+        <!-- STATUS -->
+
+        {% if pred %}
+
+            <div class="status-box saved">
+                ⏳ Pronóstico guardado
+            </div>
+
+        {% else %}
+
+            <div class="status-box empty">
+                📝 Sin pronóstico
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endwith %}
+
+    {% endfor %}
+
+</div>
+
+{% endfor %}
 
         </div>
 
