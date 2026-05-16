@@ -6,7 +6,7 @@ FLAGS = {
 
     # ANFITRIONES
     'Estados Unidos': 'us',
-    'México': 'mx',
+    'Mexico': 'mx',
     'Canada': 'ca',
     'Canadá': 'ca',
 
@@ -49,7 +49,8 @@ FLAGS = {
     'Hungría': 'hu',
     'Grecia': 'gr',
     'Rumania': 'ro',
-
+    'Bosnia y Herc.':'ba',
+    'Jordania':'jo',
     # AFC
     'Japón': 'jp',
     'Corea del Sur': 'kr',
@@ -62,6 +63,8 @@ FLAGS = {
     'Emiratos Árabes Unidos': 'ae',
     'China': 'cn',
     'Uzbekistán': 'uz',
+    'Cabo Verde':'cv',
+    'RD Congo':'cd',
 
     # CAF
     'Marruecos': 'ma',
@@ -81,6 +84,8 @@ FLAGS = {
     'Jamaica': 'jm',
     'Honduras': 'hn',
     'El Salvador': 'sv',
+    'Haití':'ht',
+    'Curazao':'cw',
 
     # OFC
     'Nueva Zelanda': 'nz',
