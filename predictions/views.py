@@ -69,7 +69,6 @@ FLAGS = {
 
     # AFC
     'Japón': 'jp',
-    'Japón': 'jp',
     'Corea del Sur': 'kr',
     'Corea': 'kr',
     'Australia': 'au',
@@ -109,7 +108,7 @@ FLAGS = {
 # SELECCIONES
 # =========================================
 
-SELECCIONES = sorted(list(FLAGS.keys()))
+SELECCIONES = sorted(list(set(FLAGS.keys())))
 
 # =========================================
 # VIEW PRINCIPAL
@@ -130,7 +129,10 @@ def mis_predicciones(request):
         if timezone.now() >= FECHA_CIERRE_GRUPOS:
             return redirect('mis_predicciones')
 
-        # 🏆 campeón
+        # =========================================
+        # CAMPEÓN
+        # =========================================
+
         campeon = request.POST.get('campeon')
 
         if campeon:
@@ -142,7 +144,10 @@ def mis_predicciones(request):
                 }
             )
 
-        # ⚽ predicciones partidos
+        # =========================================
+        # PREDICCIONES
+        # =========================================
+
         for partido in partidos:
 
             local = request.POST.get(f'local_{partido.id}')
@@ -190,7 +195,7 @@ def mis_predicciones(request):
 
     for partido in partidos:
 
-        fecha = partido.fecha_partido.strftime('%d %b %Y')
+        fecha = partido.fecha_partido.date()
 
         partido.flag_local = FLAGS.get(
             partido.equipo_local,
