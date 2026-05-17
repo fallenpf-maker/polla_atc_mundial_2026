@@ -104,6 +104,121 @@
 
 </head>
 
+<!-- AUDIO FONDO -->
+
+    <audio
+        id="bg-music"
+        loop
+    >
+        <source
+            src="{% static 'audio/theme.mp3' %}"
+            type="audio/mpeg"
+        >
+    </audio>
+
+<!-- BOTÓN AUDIO -->
+
+    <button id="music-toggle">
+
+        🔊
+
+    </button>
+
+    <style>
+
+#music-toggle {
+
+        position: fixed;
+
+        bottom: 20px;
+        right: 20px;
+
+        width: 54px;
+        height: 54px;
+
+        border-radius: 50%;
+
+        border: none;
+
+        background: rgba(15,23,42,0.85);
+
+        color: white;
+
+        font-size: 22px;
+
+        cursor: pointer;
+
+        z-index: 9999;
+
+        backdrop-filter: blur(10px);
+
+        box-shadow:
+            0 8px 20px rgba(0,0,0,0.25);
+
+        transition: 0.3s;
+    }
+
+#music-toggle:hover {
+
+        transform: scale(1.08);
+
+        background: rgba(30,41,59,0.95);
+    }
+
+    </style>
+
+    <script>
+
+    const music =
+        document.getElementById('bg-music');
+
+    const toggle =
+        document.getElementById('music-toggle');
+
+    let playing = false;
+
+// =====================================
+// AUTOPLAY INTELIGENTE
+// =====================================
+
+    document.addEventListener('click', function iniciarAudio() {
+
+        if (!playing) {
+
+            music.volume = 0.35;
+
+            music.play();
+
+            playing = true;
+
+            toggle.innerHTML = '🔊';
+        }
+
+    }, { once: true });
+
+// =====================================
+// BOTÓN TOGGLE
+// =====================================
+
+    toggle.addEventListener('click', function() {
+
+        if (music.paused) {
+
+            music.play();
+
+            toggle.innerHTML = '🔊';
+
+        } else {
+
+            music.pause();
+
+            toggle.innerHTML = '🔇';
+        }
+
+    });
+
+    </script>
+
 <body>
 
     {% if user.is_authenticated %}
