@@ -104,120 +104,169 @@
 
 </head>
 
-<!-- AUDIO FONDO -->
+<!-- AUDIO -->
 
-    <audio
-        id="bg-music"
-        loop
+<audio
+    id="bg-music"
+    loop
+>
+    <source
+        src="{% static 'audio/theme.mp3' %}"
+        type="audio/mpeg"
     >
-        <source
-            src="{% static 'audio/theme.mp3' %}"
-            type="audio/mpeg"
-        >
-    </audio>
+</audio>
 
 <!-- BOTÓN AUDIO -->
 
-    <button id="music-toggle">
+<button id="music-toggle">
+    🔇
+</button>
 
-        🔊
-
-    </button>
-
-    <style>
+<style>
 
 #music-toggle {
 
-        position: fixed;
+    position: fixed;
 
-        bottom: 20px;
-        right: 20px;
+    bottom: 20px;
+    right: 20px;
 
-        width: 54px;
-        height: 54px;
+    width: 54px;
+    height: 54px;
 
-        border-radius: 50%;
+    border-radius: 50%;
 
-        border: none;
+    border: none;
 
-        background: rgba(15,23,42,0.85);
+    background: rgba(15,23,42,0.85);
 
-        color: white;
+    color: white;
 
-        font-size: 22px;
+    font-size: 22px;
 
-        cursor: pointer;
+    cursor: pointer;
 
-        z-index: 9999;
+    z-index: 9999;
 
-        backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 
-        box-shadow:
-            0 8px 20px rgba(0,0,0,0.25);
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.25);
 
-        transition: 0.3s;
-    }
+    transition: 0.3s;
+}
 
 #music-toggle:hover {
 
-        transform: scale(1.08);
+    transform: scale(1.08);
 
-        background: rgba(30,41,59,0.95);
+    background: rgba(30,41,59,0.95);
+}
+
+</style>
+
+<script>
+
+const music =
+    document.getElementById('bg-music');
+
+const toggle =
+    document.getElementById('music-toggle');
+
+music.volume = 0.35;
+
+// ======================================
+// RESTAURAR ESTADO
+// ======================================
+
+const musicEnabled =
+    localStorage.getItem('musicEnabled');
+
+// ======================================
+// SI YA FUE ACTIVADO ANTES
+// ======================================
+
+if (musicEnabled === 'true') {
+
+    music.play()
+    .then(() => {
+
+        toggle.innerHTML = '🔊';
+
+    })
+    .catch(() => {});
+
+} else {
+
+    toggle.innerHTML = '🔇';
+}
+
+// ======================================
+// PRIMER CLICK GLOBAL
+// ======================================
+
+function activarMusica() {
+
+    music.play()
+    .then(() => {
+
+        localStorage.setItem(
+            'musicEnabled',
+            'true'
+        );
+
+        toggle.innerHTML = '🔊';
+
+    })
+    .catch(() => {});
+
+    document.removeEventListener(
+        'click',
+        activarMusica
+    );
+}
+
+document.addEventListener(
+    'click',
+    activarMusica
+);
+
+// ======================================
+// BOTÓN MUTE
+// ======================================
+
+toggle.addEventListener('click', function(event) {
+
+    event.stopPropagation();
+
+    if (music.paused) {
+
+        music.play();
+
+        localStorage.setItem(
+            'musicEnabled',
+            'true'
+        );
+
+        toggle.innerHTML = '🔊';
+
+    } else {
+
+        music.pause();
+
+        localStorage.setItem(
+            'musicEnabled',
+            'false'
+        );
+
+        toggle.innerHTML = '🔇';
     }
 
-    </style>
+});
 
-    <script>
+</script>
 
-    const music =
-        document.getElementById('bg-music');
-
-    const toggle =
-        document.getElementById('music-toggle');
-
-    let playing = false;
-
-// =====================================
-// AUTOPLAY INTELIGENTE
-// =====================================
-
-    document.addEventListener('click', function iniciarAudio() {
-
-        if (!playing) {
-
-            music.volume = 0.35;
-
-            music.play();
-
-            playing = true;
-
-            toggle.innerHTML = '🔊';
-        }
-
-    }, { once: true });
-
-// =====================================
-// BOTÓN TOGGLE
-// =====================================
-
-    toggle.addEventListener('click', function() {
-
-        if (music.paused) {
-
-            music.play();
-
-            toggle.innerHTML = '🔊';
-
-        } else {
-
-            music.pause();
-
-            toggle.innerHTML = '🔇';
-        }
-
-    });
-
-    </script>
+{% endblock %}
 
 <body>
 
