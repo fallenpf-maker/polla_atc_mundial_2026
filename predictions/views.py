@@ -5,7 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import datetime
 from collections import defaultdict
-
+from utils.google_sheets import (
+    guardar_prediccion,
+    guardar_campeon
+)
 # =========================================
 # FECHA CIERRE
 # =========================================
@@ -122,7 +125,11 @@ def mis_predicciones(request):
                     'equipo_campeon': campeon
                 }
             )
-
+            guardar_campeon([
+                str(timezone.now()),
+                request.user.username,
+                campeon
+            ])
         # =========================================
         # PREDICCIONES
         # =========================================
@@ -142,7 +149,17 @@ def mis_predicciones(request):
                         'pred_visitante': int(visitante)
                     }
                 )
+                guardar_prediccion([
 
+                    str(timezone.now()),
+
+                    request.user.username,
+
+                    f"{partido.equipo_local} vs {partido.equipo_visitante}",
+
+                    f"{local}-{visitante}"
+
+                ])
         return redirect('mis_predicciones')
 
     # =========================================
