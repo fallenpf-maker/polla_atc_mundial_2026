@@ -125,14 +125,18 @@ def mis_predicciones(request):
                     'equipo_campeon': campeon
                 }
             )
-            guardar_campeon([
-                str(timezone.now()),
-                request.user.username,
-                campeon
-            ])
+            if campeon and not campeon_actual:
+
+                guardar_campeon([
+                    str(timezone.now()),
+                    request.user.username,
+                    campeon
+                ])
         # =========================================
         # PREDICCIONES
         # =========================================
+
+        predicciones_export = []
 
         for partido in partidos:
 
@@ -149,17 +153,29 @@ def mis_predicciones(request):
                         'pred_visitante': int(visitante)
                     }
                 )
+
+                predicciones_export.append(
+                    f"{partido.equipo_local} vs {partido.equipo_visitante}: {local}-{visitante}"
+                )
+
+# =====================================
+# GOOGLE SHEETS (UNA SOLA FILA)
+# =====================================
+
+        if predicciones_export:
+
+            try:
+
                 guardar_prediccion([
-
                     str(timezone.now()),
-
                     request.user.username,
-
-                    f"{partido.equipo_local} vs {partido.equipo_visitante}",
-
-                    f"{local}-{visitante}"
-
+                    " | ".join(predicciones_export)
                 ])
+
+            except Exception as e:
+
+                print("ERROR EXPORTANDO:")
+                print(e)
         return redirect('mis_predicciones')
 
     # =========================================
