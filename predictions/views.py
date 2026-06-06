@@ -114,7 +114,10 @@ def mis_predicciones(request):
         # =========================================
         # CAMPEÓN
         # =========================================
-
+        campeon_actual = ChampionPrediction.objects.filter(
+            usuario=request.user
+        ).first()
+        
         campeon = request.POST.get('campeon')
 
         if campeon:
