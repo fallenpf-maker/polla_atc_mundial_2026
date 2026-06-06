@@ -91,21 +91,66 @@ def dashboard(request):
         })
     # 📊 TOTAL PREDICCIONES
         # 📊 SOLO predicciones evaluadas
-    preds = Prediction.objects.filter(
+    
+    # =====================================
+# ESTADÍSTICAS PERSONALES
+# =====================================
+
+        preds = Prediction.objects.filter(
     usuario=request.user
-    )
-    total = preds.count()
+)
 
-    exactos = preds.filter(puntos_obtenidos=3).count()
-    parciales = preds.filter(puntos_obtenidos=1).count()
-    fallados = preds.filter(puntos_obtenidos=0).count()
+        total = preds.count()
 
-    # 🧮 CÁLCULOS
-    tasa_acierto = (exactos / total * 100) if total > 0 else 0
+# Pronósticos aún no evaluados
+        pendientes = preds.filter(
+            partido__goles_local__isnull=True
+        ).count()
 
-    porc_exactos = (exactos / total * 100) if total > 0 else 0
-    porc_parciales = (parciales / total * 100) if total > 0 else 0
-    porc_fallados = (fallados / total * 100) if total > 0 else 0
+# Solo partidos con resultado cargado
+        evaluadas = preds.filter(
+            partido__goles_local__isnull=False,
+            partido__goles_visitante__isnull=False
+        )
+
+        exactos = evaluadas.filter(
+            puntos_obtenidos=3
+        ).count()
+
+        parciales = evaluadas.filter(
+            puntos_obtenidos=1
+        ).count()
+
+        fallados = evaluadas.filter(
+            puntos_obtenidos=0
+        ).count()
+
+        total_evaluadas = evaluadas.count()
+
+# Porcentajes
+        tasa_acierto = (
+            (exactos / total_evaluadas) * 100
+            if total_evaluadas > 0
+            else 0
+        )
+
+        porc_exactos = (
+            (exactos / total_evaluadas) * 100
+            if total_evaluadas > 0
+            else 0
+        )
+
+        porc_parciales = (
+            (parciales / total_evaluadas) * 100
+            if total_evaluadas > 0
+            else 0
+        )
+
+        porc_fallados = (
+            (fallados / total_evaluadas) * 100
+            if total_evaluadas > 0
+            else 0
+        )
 
     # 📦 contexto final
     contexto = {
@@ -123,6 +168,8 @@ def dashboard(request):
         'exactos': exactos,
         'parciales': parciales,
         'fallados': fallados,
+        'pendientes': pendientes,
+        'total_evaluadas': total_evaluadas,
         'porc_exactos': round(porc_exactos, 1),
         'porc_parciales': round(porc_parciales, 1),
         'porc_fallados': round(porc_fallados, 1),
