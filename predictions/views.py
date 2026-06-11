@@ -14,7 +14,7 @@ from utils.google_sheets import (
 # =========================================
 
 FECHA_CIERRE_GRUPOS = timezone.make_aware(
-    datetime(2026, 6, 11, 12, 0)
+    datetime(2026, 6, 11, 15, 0)
 )
 
 # =========================================
