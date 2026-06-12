@@ -18,7 +18,7 @@ def dashboard(request):
         .annotate(
             puntos_totales=Coalesce(Sum('prediction__puntos_obtenidos'), 0)
         )
-        .order_by('-puntos_totales')
+        .order_by('-puntos_totales','username')
     )
 
     # 🏆 máximo para barras
@@ -190,7 +190,7 @@ def estadisticas(request):
                 0
             )
         )
-        .order_by('-puntos_totales')
+        .order_by('-puntos_totales','username')
     )
 
     # 📅 Fechas únicas
