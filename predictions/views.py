@@ -14,8 +14,34 @@ from utils.google_sheets import (
 # =========================================
 
 FECHA_CIERRE_GRUPOS = timezone.make_aware(
-    datetime(2026, 6, 11, 18, 0)
+    datetime(2026, 6, 29, 18, 0)
 )
+
+FECHA_CIERRE_16VOS = timezone.make_aware(
+    datetime(2026, 7, 2, 18, 0)
+)
+
+FECHA_CIERRE_OCTAVOS = timezone.make_aware(
+    datetime(2026, 7, 8, 18, 0)
+)
+
+FECHA_CIERRE_CUARTOS = timezone.make_aware(
+    datetime(2026, 7, 12, 18, 0)
+)
+
+FECHA_CIERRE_SEMIS = timezone.make_aware(
+    datetime(2026, 7, 16, 18, 0)
+)
+
+FECHA_CIERRE_FINAL = timezone.make_aware(
+    datetime(2026, 7, 20, 18, 0)
+)
+# =========================================
+# FASE ACTIVA
+# =========================================
+
+FASE_ACTIVA = "DIECISEISAVOS"
+CAMPEON_HABILITADO = False
 
 # =========================================
 # BANDERAS
@@ -107,10 +133,7 @@ def mis_predicciones(request):
 
     if request.method == 'POST':
 
-        # 🚫 BLOQUEO TOTAL
-        if timezone.now() >= FECHA_CIERRE_GRUPOS:
-            return redirect('mis_predicciones')
-
+        
         # =========================================
         # CAMPEÓN
         # =========================================
@@ -142,19 +165,45 @@ def mis_predicciones(request):
         predicciones_export = []
 
         for partido in partidos:
-
+            # Solo guardar la fase actualmente habilitada
+            if partido.fase != FASE_ACTIVA:
+                continue
             local = request.POST.get(f'local_{partido.id}')
             visitante = request.POST.get(f'visitante_{partido.id}')
 
+            clasificado = request.POST.get(f'clasificado_{partido.id}')
+            metodo = request.POST.get(f'metodo_{partido.id}')
+
+            print("------------------------")
+            print("Partido:", partido.id)
+            print("Local:", local)
+            print("Visitante:", visitante)
+            print("Clasificado POST:", clasificado)
+            print("Método POST:", metodo)
+
+
+
             if local != '' and visitante != '':
 
+                datos = {
+                    'pred_local': int(local),
+                    'pred_visitante': int(visitante)
+                }
+
+    # Solo para eliminatorias
+                if partido.fase != 'GRUPOS':
+
+                    datos['equipo_clasificado'] = clasificado
+                    datos['metodo_clasificacion'] = metodo
+
                 Prediction.objects.update_or_create(
+
                     usuario=request.user,
+
                     partido=partido,
-                    defaults={
-                        'pred_local': int(local),
-                        'pred_visitante': int(visitante)
-                    }
+
+                    defaults=datos
+
                 )
 
                 predicciones_export.append(
@@ -222,7 +271,37 @@ def mis_predicciones(request):
             'un'
         )
 
+        partido.editable = (
+            partido.fase == FASE_ACTIVA
+        )
+
         partidos_por_fecha[fecha].append(partido)
+
+
+# =========================================
+# FECHA DE CIERRE SEGÚN FASE ACTIVA
+# =========================================
+
+    if FASE_ACTIVA == "GRUPOS":
+        fecha_cierre_actual = FECHA_CIERRE_GRUPOS
+
+    elif FASE_ACTIVA == "DIECISEISAVOS":
+        fecha_cierre_actual = FECHA_CIERRE_16VOS
+
+    elif FASE_ACTIVA == "OCTAVOS":
+        fecha_cierre_actual = FECHA_CIERRE_OCTAVOS
+
+    elif FASE_ACTIVA == "CUARTOS":
+        fecha_cierre_actual = FECHA_CIERRE_CUARTOS
+
+    elif FASE_ACTIVA == "SEMIS":
+        fecha_cierre_actual = FECHA_CIERRE_SEMIS
+
+    elif FASE_ACTIVA == "FINAL":
+        fecha_cierre_actual = FECHA_CIERRE_FINAL
+
+    else:
+        fecha_cierre_actual = timezone.now()
 
     # =========================================
     # CONTEXTO
@@ -230,17 +309,19 @@ def mis_predicciones(request):
 
     contexto = {
 
-        'partidos_por_fecha': dict(partidos_por_fecha),
+                'partidos_por_fecha': dict(partidos_por_fecha),
 
-        'pred_dict': pred_dict,
+                'pred_dict': pred_dict,
 
-        'now': timezone.now(),
+                'now': timezone.now(),
 
-        'fecha_cierre': FECHA_CIERRE_GRUPOS,
+                'fecha_cierre': fecha_cierre_actual,
 
-        'selecciones': SELECCIONES,
+                'selecciones': SELECCIONES,
 
-        'campeon_actual': campeon_actual,
+                'campeon_actual': campeon_actual,
+                
+                'campeon_habilitado': CAMPEON_HABILITADO,
 
     }
 

@@ -3,6 +3,12 @@ from django.db import models
 
 class Match(models.Model):
 
+    METODOS = [
+        ('REGULAR', 'Tiempo Regular'),
+        ('PRORROGA', 'Prórroga'),
+        ('PENALES', 'Penales'),
+    ]
+
     FASES = [
         ('GRUPOS','Grupos'),
         ('DIECISEISAVOS','Dieciseisavos'),
@@ -48,6 +54,7 @@ class Match(models.Model):
 
     metodo_clasificacion = models.CharField(
         max_length=20,
+        choices=METODOS,
         blank=True,
         null=True
     )

@@ -10,19 +10,36 @@ from oauth2client.service_account import (
 # CREDENTIALS DESDE RENDER
 # =====================================
 
-google_creds = json.loads(
-    os.environ.get('GOOGLE_CREDENTIALS')
-)
-
 scope = [
     'https://spreadsheets.google.com/feeds',
     'https://www.googleapis.com/auth/drive'
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_dict(
-    google_creds,
-    scope
-)
+# ==============================
+# RENDER
+# ==============================
+
+if os.environ.get("GOOGLE_CREDENTIALS"):
+
+    google_creds = json.loads(
+        os.environ["GOOGLE_CREDENTIALS"]
+    )
+
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(
+        google_creds,
+        scope
+    )
+
+# ==============================
+# DESARROLLO LOCAL
+# ==============================
+
+else:
+
+    creds = ServiceAccountCredentials.from_json_keyfile_name(
+        "credentials/google_credentials.json",
+        scope
+    )
 
 client = gspread.authorize(creds)
 

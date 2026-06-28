@@ -263,6 +263,32 @@ body {
     font-weight: bold;
 }
 
+/* SELECT ELIMINATORIAS */
+
+.eliminatoria-select{
+
+width:100%;
+
+padding:12px;
+
+border-radius:12px;
+
+border:none;
+
+background:rgba(255,255,255,.10);
+
+color:white;
+
+font-size:16px;
+
+outline:none;
+}
+
+.eliminatoria-select option{
+
+color:black;
+}
+
 /* STATUS */
 
 .status-box {
@@ -380,7 +406,7 @@ body {
                 🏆 Pronóstico Campeón Mundial
             </h2>
 
-            {% if now < fecha_cierre %}
+            {% if campeon_habilitado %}
 
                 <select name="campeon">
 
@@ -503,62 +529,175 @@ body {
                         <div class="score-inputs">
 
                             <input
+                                id="local_{{ partido.id }}"
                                 type="number"
                                 name="local_{{ partido.id }}"
                                 value="{{ pred.pred_local|default_if_none:'' }}"
                                 min="0"
+                                {% if not partido.editable %}disabled{% endif %}
                             >
 
                             <div class="separator">-</div>
 
                             <input
+                                id="visitante_{{ partido.id }}"
                                 type="number"
                                 name="visitante_{{ partido.id }}"
                                 value="{{ pred.pred_visitante|default_if_none:'' }}"
                                 min="0"
+                                {% if not partido.editable %}disabled{% endif %}
                             >
 
                         </div>
+                        {% if partido.fase != "GRUPOS" %}
 
+                        <div style="margin-top:20px;">
+
+                            <label style="display:block;margin-bottom:8px;">
+                                🏆 Equipo que clasifica
+                            </label>
+
+                            <select
+                                id="clasificado_{{ partido.id }}"
+                                name="clasificado_{{ partido.id }}"
+                                class="eliminatoria-select"
+                                {% if not partido.editable %}disabled{% endif %}
+                            >
+
+                                <option value="">Seleccionar...</option>
+
+                                <option
+                                    value="{{ partido.equipo_local }}"
+                                    {% if pred and pred.equipo_clasificado == partido.equipo_local %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ partido.equipo_local }}
+                                </option>
+
+                                <option
+                                    value="{{ partido.equipo_visitante }}"
+                                    {% if pred and pred.equipo_clasificado == partido.equipo_visitante %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ partido.equipo_visitante }}
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div style="margin-top:15px;">
+
+                            <label style="display:block;margin-bottom:8px;">
+                                ⏱ Método de clasificación
+                            </label>
+
+                            <select
+                                id="metodo_{{ partido.id }}"
+                                name="metodo_{{ partido.id }}"
+                                class="eliminatoria-select"
+                                {% if not partido.editable %}disabled{% endif %}
+                            >
+
+                                <option value="">Seleccionar...</option>
+
+                                <option
+                                    value="REGULAR"
+                                    {% if pred and pred.metodo_clasificacion == "REGULAR" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    Tiempo Regular
+                                </option>
+
+                                <option
+                                    value="PRORROGA"
+                                    {% if pred and pred.metodo_clasificacion == "PRORROGA" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    Prórroga
+                                </option>
+
+                                <option
+                                    value="PENALES"
+                                    {% if pred and pred.metodo_clasificacion == "PENALES" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    Penales
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        {% endif %}
                         <!-- STATUS -->
 
                         {% if pred %}
 
-                            {% if pred.puntos_obtenidos == 3 %}
-
-                                <div class="status-box exact">
-
-                                    🟢 Resultado exacto · +3 pts
-
-                                </div>
-
-                            {% elif pred.puntos_obtenidos == 1 %}
-
-                                <div class="status-box partial">
-
-                                    🟡 Resultado parcial · +1 pt
-
-                                </div>
-
-                            {% elif pred.puntos_obtenidos == 0 and partido.goles_local != None %}
-
-                                <div class="status-box failed">
-
-                                    🔴 Pronóstico fallado · 0 pts
-
-                                </div>
-
-                            {% else %}
-
-                                <div class="status-box pending">
-
-                                    ⏳ Pronóstico guardado
-
-                                </div>
-
-                            {% endif %}
-
+                        {% if partido.goles_local == None %}
+                    
+                            <div class="status-box pending">
+                    
+                                ⏳ Pronóstico guardado
+                    
+                            </div>
+                    
+                        {% elif pred.puntos_obtenidos == 5 %}
+                    
+                            <div class="status-box exact">
+                    
+                                🟢 Perfecto · +5 pts
+                    
+                            </div>
+                    
+                        {% elif pred.puntos_obtenidos == 4 %}
+                    
+                            <div class="status-box exact">
+                    
+                                🟢 Excelente · +4 pts
+                    
+                            </div>
+                    
+                        {% elif pred.puntos_obtenidos == 3 %}
+                    
+                            <div class="status-box exact">
+                    
+                                🟢 Marcador exacto o super parcial +3 pts
+                    
+                            </div>
+                    
+                        {% elif pred.puntos_obtenidos == 2 %}
+                    
+                            <div class="status-box partial">
+                    
+                                🟡 Buen pronóstico · +2 pts
+                    
+                            </div>
+                    
+                        {% elif pred.puntos_obtenidos == 1 %}
+                    
+                            <div class="status-box partial">
+                    
+                                🟡 Resultado parcial · +1 pt
+                    
+                            </div>
+                    
                         {% else %}
+                    
+                            <div class="status-box failed">
+                    
+                                🔴 Pronóstico fallado · 0 pts
+                    
+                            </div>
+                    
+                        {% endif %}
+                    
+                    {% else %}
 
                             <div class="status-box empty">
 
@@ -591,6 +730,78 @@ body {
 </div>
 
 <script>
+document.querySelectorAll(".match-card").forEach(card => {
+
+const inputs = card.querySelectorAll(".score-inputs input");
+
+if(inputs.length !== 2){
+    return;
+}
+
+const local = inputs[0];
+const visitante = inputs[1];
+
+const clasificado = card.querySelector("select[name^='clasificado_']");
+const metodo = card.querySelector("select[name^='metodo_']");
+
+if(!clasificado || !metodo){
+    return;
+}
+
+function actualizar(){
+
+    if(local.value==="" || visitante.value===""){
+
+        metodo.disabled=false;
+        clasificado.disabled=false;
+
+        metodo.querySelector("option[value='REGULAR']").hidden=false;
+
+        return;
+    }
+
+    const gl=parseInt(local.value);
+    const gv=parseInt(visitante.value);
+
+    if(gl===gv){
+
+        metodo.disabled=false;
+        clasificado.disabled=false;
+
+        metodo.querySelector("option[value='REGULAR']").hidden=true;
+
+        if(metodo.value==="REGULAR"){
+            metodo.value="";
+        }
+
+        return;
+    }
+
+    metodo.querySelector("option[value='REGULAR']").hidden=false;
+
+    metodo.value="REGULAR";
+    metodo.disabled=true;
+
+    if(gl>gv){
+
+        clasificado.selectedIndex=1;
+
+    }else{
+
+        clasificado.selectedIndex=2;
+
+    }
+
+    clasificado.disabled=true;
+
+}
+
+local.addEventListener("input", actualizar);
+visitante.addEventListener("input", actualizar);
+
+actualizar();
+
+});
 
 const fechaCierre = new Date(
     "{{ fecha_cierre|date:'Y-m-d H:i:s' }}"
@@ -633,7 +844,19 @@ const intervalo = setInterval(function() {
         minutos + "m " +
         segundos + "s";
 
-}, 1000);
+},1000);
+
+
+// NUEVO CÓDIGO
+document.querySelector("form").addEventListener("submit", function () {
+
+    document.querySelectorAll("select").forEach(function(select){
+
+        select.disabled = false;
+
+    });
+
+});
 
 </script>
 

@@ -89,23 +89,43 @@ class Prediction(models.Model):
             self.save()
             return puntos
 
-        # 🔴 ELIMINATORIAS
-        es_empate_real = (real_local == real_visit)
+        # =====================================
+        # ELIMINATORIAS
+        # =====================================
+        print("===================================")
+        print("Predicción:", self.pred_local, self.pred_visitante)
+        print("Clasificado pred:", self.equipo_clasificado)
+        print("Método pred:", self.metodo_clasificacion)
 
-        if es_empate_real:
+        print("Resultado:", real_local, real_visit)
+        print("Clasificado real:", self.partido.clasificado)
+        print("Método real:", self.partido.metodo_clasificacion)
+        print("===================================")
+        # ¿Acertó el clasificado?
+        acerto_clasificado = (
+            self.equipo_clasificado == self.partido.clasificado
+        )
 
-            # ✔ Acierta clasificado
-            if self.equipo_clasificado == self.partido.clasificado:
-                puntos += 1
+        if acerto_clasificado:
+            puntos += 1
 
-            # ✔ Acierta método
-            if self.metodo_clasificacion == self.partido.metodo_clasificacion:
-                puntos += 1
+        # ¿Acertó el método?
+        if acerto_clasificado:
 
-        else:
-            # ✔ Acierta que fue en 90'
-            if self.metodo_clasificacion == 'REGULAR':
-                puntos += 1
+            # El partido terminó empatado
+            if real_local == real_visit:
+
+                if (
+                    self.metodo_clasificacion ==
+                    self.partido.metodo_clasificacion
+                ):
+                    puntos += 1
+
+            # El partido terminó en 90'
+            else:
+
+                if self.metodo_clasificacion == "REGULAR":
+                    puntos += 1
 
         self.puntos_obtenidos = puntos
         self.save()
