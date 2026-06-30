@@ -730,19 +730,13 @@ color:black;
 </div>
 
 <script>
-document.querySelectorAll(".match-card").forEach(card => {
+document.querySelectorAll(".match-card").forEach(card=>{
 
-const inputs = card.querySelectorAll(".score-inputs input");
+const local=card.querySelector("input[name^='local_']");
+const visitante=card.querySelector("input[name^='visitante_']");
 
-if(inputs.length !== 2){
-    return;
-}
-
-const local = inputs[0];
-const visitante = inputs[1];
-
-const clasificado = card.querySelector("select[name^='clasificado_']");
-const metodo = card.querySelector("select[name^='metodo_']");
+const clasificado=card.querySelector("select[name^='clasificado_']");
+const metodo=card.querySelector("select[name^='metodo_']");
 
 if(!clasificado || !metodo){
     return;
@@ -752,21 +746,22 @@ function actualizar(){
 
     if(local.value==="" || visitante.value===""){
 
-        metodo.disabled=false;
         clasificado.disabled=false;
+        metodo.disabled=false;
 
         metodo.querySelector("option[value='REGULAR']").hidden=false;
 
         return;
     }
 
-    const gl=parseInt(local.value);
-    const gv=parseInt(visitante.value);
+    let gl=parseInt(local.value);
+    let gv=parseInt(visitante.value);
 
     if(gl===gv){
 
-        metodo.disabled=false;
         clasificado.disabled=false;
+
+        metodo.disabled=false;
 
         metodo.querySelector("option[value='REGULAR']").hidden=true;
 
@@ -774,34 +769,42 @@ function actualizar(){
             metodo.value="";
         }
 
-        return;
-    }
-
-    metodo.querySelector("option[value='REGULAR']").hidden=false;
-
-    metodo.value="REGULAR";
-    metodo.disabled=true;
-
-    if(gl>gv){
-
-        clasificado.selectedIndex=1;
-
     }else{
 
-        clasificado.selectedIndex=2;
+        metodo.querySelector("option[value='REGULAR']").hidden=false;
+
+        metodo.value="REGULAR";
+
+        metodo.disabled=true;
+
+        if(gl>gv){
+
+            clasificado.value=
+            clasificado.options[1].value;
+
+        }else{
+
+            clasificado.value=
+            clasificado.options[2].value;
+
+        }
+
+        clasificado.disabled=true;
 
     }
-
-    clasificado.disabled=true;
 
 }
 
-local.addEventListener("input", actualizar);
-visitante.addEventListener("input", actualizar);
+local.addEventListener("input",actualizar);
+
+visitante.addEventListener("input",actualizar);
 
 actualizar();
 
 });
+// =========================================
+// CONTADOR REGRESIVO
+// =========================================
 
 const fechaCierre = new Date(
     "{{ fecha_cierre|date:'Y-m-d H:i:s' }}"
@@ -809,33 +812,37 @@ const fechaCierre = new Date(
 
 const contador = document.getElementById("contador");
 
-const intervalo = setInterval(function() {
+const intervalo = setInterval(function(){
 
     const ahora = new Date().getTime();
 
     const diferencia = fechaCierre - ahora;
 
-    if (diferencia <= 0) {
+    if(diferencia <= 0){
 
         clearInterval(intervalo);
 
-        contador.innerHTML =
-            "🔒 Predicciones cerradas";
+        contador.innerHTML = "🔒 Predicciones cerradas";
 
         return;
+
     }
 
-    const dias =
-        Math.floor(diferencia / (1000 * 60 * 60 * 24));
+    const dias = Math.floor(
+        diferencia / (1000 * 60 * 60 * 24)
+    );
 
-    const horas =
-        Math.floor((diferencia / (1000 * 60 * 60)) % 24);
+    const horas = Math.floor(
+        (diferencia / (1000 * 60 * 60)) % 24
+    );
 
-    const minutos =
-        Math.floor((diferencia / (1000 * 60)) % 60);
+    const minutos = Math.floor(
+        (diferencia / (1000 * 60)) % 60
+    );
 
-    const segundos =
-        Math.floor((diferencia / 1000) % 60);
+    const segundos = Math.floor(
+        (diferencia / 1000) % 60
+    );
 
     contador.innerHTML =
         "⏳ Cierre en: " +
@@ -847,14 +854,14 @@ const intervalo = setInterval(function() {
 },1000);
 
 
-// NUEVO CÓDIGO
-document.querySelector("form").addEventListener("submit", function () {
 
-    document.querySelectorAll("select").forEach(function(select){
+document.querySelector("form").addEventListener("submit",function(){
 
-        select.disabled = false;
+document.querySelectorAll("select").forEach(function(s){
 
-    });
+s.disabled=false;
+
+});
 
 });
 

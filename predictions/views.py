@@ -18,11 +18,11 @@ FECHA_CIERRE_GRUPOS = timezone.make_aware(
 )
 
 FECHA_CIERRE_16VOS = timezone.make_aware(
-    datetime(2026, 7, 2, 18, 0)
+    datetime(2026, 6, 25, 18, 0)
 )
 
 FECHA_CIERRE_OCTAVOS = timezone.make_aware(
-    datetime(2026, 7, 8, 18, 0)
+    datetime(2026, 6, 25, 18, 0)
 )
 
 FECHA_CIERRE_CUARTOS = timezone.make_aware(
@@ -40,7 +40,7 @@ FECHA_CIERRE_FINAL = timezone.make_aware(
 # FASE ACTIVA
 # =========================================
 
-FASE_ACTIVA = "DIECISEISAVOS"
+FASE_ACTIVA = "OCTAVOS"
 CAMPEON_HABILITADO = False
 
 # =========================================
@@ -141,7 +141,10 @@ def mis_predicciones(request):
             usuario=request.user
         ).first()
         
-        campeon = request.POST.get('campeon')
+        campeon = None
+
+        if CAMPEON_HABILITADO:
+            campeon = request.POST.get("campeon")
 
         if campeon:
 
@@ -173,15 +176,6 @@ def mis_predicciones(request):
 
             clasificado = request.POST.get(f'clasificado_{partido.id}')
             metodo = request.POST.get(f'metodo_{partido.id}')
-
-            print("------------------------")
-            print("Partido:", partido.id)
-            print("Local:", local)
-            print("Visitante:", visitante)
-            print("Clasificado POST:", clasificado)
-            print("Método POST:", metodo)
-
-
 
             if local != '' and visitante != '':
 
