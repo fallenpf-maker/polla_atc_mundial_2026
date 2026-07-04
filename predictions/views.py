@@ -22,7 +22,7 @@ FECHA_CIERRE_16VOS = timezone.make_aware(
 )
 
 FECHA_CIERRE_OCTAVOS = timezone.make_aware(
-    datetime(2026, 7, 5, 1, 0)
+    datetime(2026, 6, 5, 1, 0)
 )
 
 FECHA_CIERRE_CUARTOS = timezone.make_aware(
