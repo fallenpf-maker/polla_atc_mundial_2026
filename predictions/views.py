@@ -30,7 +30,7 @@ FECHA_CIERRE_CUARTOS = timezone.make_aware(
 )
 
 FECHA_CIERRE_SEMIS = timezone.make_aware(
-    datetime(2026, 7, 16, 18, 0)
+    datetime(2026, 7, 14, 18, 0)
 )
 
 FECHA_CIERRE_FINAL = timezone.make_aware(
@@ -40,7 +40,7 @@ FECHA_CIERRE_FINAL = timezone.make_aware(
 # FASE ACTIVA
 # =========================================
 
-FASE_ACTIVA = "CUARTOS"
+FASE_ACTIVA = "SEMIS"
 CAMPEON_HABILITADO = False
 
 # =========================================
