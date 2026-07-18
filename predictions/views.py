@@ -40,7 +40,7 @@ FECHA_CIERRE_FINAL = timezone.make_aware(
 # FASE ACTIVA
 # =========================================
 
-FASE_ACTIVA = "FINAL"
+FASE_ACTIVA = "ABC"
 CAMPEON_HABILITADO = False
 
 # =========================================
