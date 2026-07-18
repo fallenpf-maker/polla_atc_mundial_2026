@@ -34,13 +34,13 @@ FECHA_CIERRE_SEMIS = timezone.make_aware(
 )
 
 FECHA_CIERRE_FINAL = timezone.make_aware(
-    datetime(2026, 7, 20, 18, 0)
+    datetime(2026, 7, 18, 17, 0)
 )
 # =========================================
 # FASE ACTIVA
 # =========================================
 
-FASE_ACTIVA = "SEMIS"
+FASE_ACTIVA = "FINAL"
 CAMPEON_HABILITADO = False
 
 # =========================================
